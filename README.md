@@ -13,6 +13,8 @@ Run a static web server from the repository root, e.g. `python3 -m http.server 8
 ## Cloudflare
 Connect this repository to Cloudflare Workers Builds. The included `wrangler.jsonc` defines the repository root as the static asset directory. For a Git-connected dashboard deployment, use the Worker/Static Assets defaults appropriate to the Cloudflare UI and verify the build before attaching `itsbadlabs.com`.
 
+Git-backed production deployment enabled August 11, 2026.
+
 ## Notes before public launch
 - Replace Privacy and Terms placeholders with reviewed final language.
 - Connect a dedicated ITSBAD Labs business email/contact workflow.
