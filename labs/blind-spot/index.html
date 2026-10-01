@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111F">
+<title>AI Blind Spot — ITSBAD Labs</title>
+<meta name="description" content="AI Blind Spot is an interactive webAI experiment by ITSBAD Labs exploring the gap between machine perception and human context.">
+<link rel="canonical" href="https://itsbadlabs.com/labs/blind-spot/">
+<meta property="og:title" content="AI Blind Spot | ITSBAD Labs">
+<meta property="og:description" content="I can see. I can hear. I cannot understand. Explore the gap between machine perception and human context.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://itsbadlabs.com/labs/blind-spot/">
+<link rel="icon" type="image/svg+xml" href="../../assets/brand/favicon.svg">
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js" defer></script>
+<style>
+:root{
+  --ink:#07111F;--ink2:#0B1728;--paper:#F7F8FC;--white:#fff;
+  --pink:#FF66C4;--blue:#5FD4FF;--violet:#8A7DFF;--muted:#5B667A;
+  --line:#DCE1EA;--mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+  --sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --serif:Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font-family:var(--sans)}
+button,input{font:inherit}
+button{cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+[hidden]{display:none!important}
+.app{min-height:100vh}
+.mast{
+  min-height:70px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;
+  padding:0 22px;background:var(--ink);color:#fff;border-bottom:6px solid var(--pink);position:relative;z-index:20
+}
+.logo{display:block;width:90px;height:auto}
+.product{font:900 .68rem/1 var(--mono);letter-spacing:.16em;text-transform:uppercase}
+.utility{
+  border:1px solid #56657D;background:transparent;color:#fff;min-height:38px;padding:0 12px;
+  font:800 .64rem var(--mono);letter-spacing:.09em;text-transform:uppercase
+}
+.utility:hover{border-color:var(--pink);color:var(--pink)}
+.stage{display:none;min-height:calc(100vh - 76px)}
+.stage.active{display:grid}
+.eyebrow{font:900 .7rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--pink);margin:0 0 18px}
+h1,h2,h3,p{margin-top:0}
+h1{font:500 clamp(4rem,8.2vw,7.8rem)/.87 var(--serif);letter-spacing:-.065em;margin:0 0 26px;max-width:900px}
+h2{font:500 clamp(2.7rem,5.6vw,5.4rem)/.92 var(--serif);letter-spacing:-.055em;margin:0 0 18px}
+h3{font:700 clamp(1.4rem,2.4vw,2rem)/1.05 var(--sans);letter-spacing:-.03em}
+.lead{font-size:clamp(1rem,1.7vw,1.2rem);line-height:1.55;color:#414B5B;max-width:700px}
+.small{font:600 .72rem/1.5 var(--mono);color:var(--muted)}
+.cta,.secondary{
+  min-height:54px;padding:0 22px;border-radius:0;font-weight:900;letter-spacing:.01em
+}
+.cta{border:0;background:var(--ink);color:#fff;border-bottom:6px solid var(--pink)}
+.cta:hover{background:var(--ink2)}
+.secondary{border:2px solid var(--ink);background:#fff;color:var(--ink)}
+.secondary:hover{background:var(--ink);color:#fff}
+.text-link{border:0;background:transparent;padding:0;color:var(--muted);text-decoration:underline;text-underline-offset:4px;font-weight:700}
+
+/* INTRO */
+#intro{grid-template-columns:minmax(0,1.3fr) minmax(330px,.7fr)}
+.intro-copy{padding:clamp(44px,7vw,90px);display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--line)}
+.intro-actions{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.intro-meta{margin-top:18px}
+.lab-panel{
+  position:relative;overflow:hidden;background:var(--ink);color:#fff;padding:30px;
+  display:grid;grid-template-rows:auto 1fr auto;gap:22px
+}
+.lab-panel:before{
+  content:"";position:absolute;inset:0;background:
+  linear-gradient(rgba(95,212,255,.08) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(95,212,255,.08) 1px,transparent 1px);background-size:38px 38px
+}
+.lab-panel:after{
+  content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--blue);
+  box-shadow:0 0 22px rgba(95,212,255,.75);animation:scanline 3s linear infinite
+}
+@keyframes scanline{from{transform:translateY(0)}to{transform:translateY(calc(100vh - 84px))}}
+.lab-panel>*{position:relative;z-index:1}
+.panel-label{font:900 .66rem/1 var(--mono);letter-spacing:.15em;text-transform:uppercase;color:var(--blue)}
+.manifesto{align-self:center;border-top:1px solid #42506A;border-bottom:1px solid #42506A;padding:30px 0}
+.manifesto p{font:500 clamp(1.8rem,3vw,3rem)/1.05 var(--serif);margin:0}
+.manifesto strong{color:var(--blue);font-weight:500}
+.rules{display:grid;gap:9px;font:700 .72rem/1.45 var(--mono);color:#AEBBD0}
+.rule{display:grid;grid-template-columns:28px 1fr;gap:10px}.rule b{color:var(--pink)}
+
+/* SCAN */
+#scan{background:#05080E;color:#fff}
+.scan-grid{width:100%;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr)}
+.vision{position:relative;overflow:hidden;min-height:calc(100vh - 76px);background:#02050A;border-right:1px solid #34415A}
+#video,#overlay{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#video{transform:scaleX(-1)}
+#overlay{pointer-events:none}
+.scan-beam{position:absolute;left:0;right:0;top:0;height:2px;background:var(--blue);box-shadow:0 0 18px rgba(95,212,255,.8);animation:liveScan 2.4s linear infinite;z-index:3}
+@keyframes liveScan{from{transform:translateY(0)}to{transform:translateY(calc(100vh - 80px))}}
+.scan-head{position:absolute;top:18px;left:18px;right:18px;z-index:4;display:flex;justify-content:space-between;gap:12px;font:900 .66rem var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.live{color:var(--blue)}
+.camera-message{position:absolute;left:18px;bottom:18px;z-index:4;background:rgba(7,17,31,.9);border-left:4px solid var(--blue);padding:12px 14px;font:.75rem/1.45 var(--mono);max-width:min(75%,650px)}
+.console{background:#fff;color:var(--ink);padding:30px;display:flex;flex-direction:column;min-width:0}
+.console-top{padding-bottom:18px;border-bottom:2px solid var(--ink)}
+.console-top h3{margin:0 0 7px}
+.console-top p{margin:0}
+.objects{margin-top:20px;border-top:1px solid var(--line)}
+.object-row{display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font:.82rem var(--mono)}
+.idx{color:var(--pink);font-weight:900}.conf{color:var(--muted);font-size:.72rem}
+.empty{padding:18px 0;color:var(--muted);font:.8rem/1.5 var(--mono)}
+.scan-actions{margin-top:auto;padding-top:22px;display:grid;gap:12px}
+.scan-actions .cta,.scan-actions .secondary{width:100%}
+.error{padding:14px;border-left:4px solid var(--pink);background:#FFF5FB;color:#414B5B;margin-top:16px}
+
+/* REVEAL */
+#reveal{background:var(--ink);color:#fff;padding:clamp(28px,5vw,64px);align-content:center}
+.reveal-wrap{width:min(100%,1180px);margin:auto}
+.reveal-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid #42506A}
+.reveal-col{padding:clamp(26px,4vw,48px)}
+.reveal-col:first-child{border-right:1px solid #42506A}
+.kicker{font:900 .68rem var(--mono);letter-spacing:.14em;text-transform:uppercase;margin-bottom:22px}
+.reveal-col:first-child .kicker{color:var(--blue)}.reveal-col:last-child .kicker{color:var(--pink)}
+.reveal-list{border-top:1px solid #42506A}
+.reveal-item{display:grid;grid-template-columns:38px 1fr auto;gap:10px;padding:13px 0;border-bottom:1px solid #42506A;font:.85rem var(--mono)}
+.reveal-item .num{color:var(--blue)}.miss{display:grid;gap:12px}
+.miss-item{display:grid;grid-template-columns:20px 1fr;gap:10px;font-size:1rem}.miss-item:before{content:"?";color:var(--pink);font:900 1rem var(--mono)}
+.thesis{padding:30px 0 0}.thesis h2{color:#fff;margin:0}.thesis strong{color:var(--blue);font-weight:500}
+.context{margin-top:28px;padding-top:24px;border-top:1px solid #42506A;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:end}
+.context label{display:block;font:900 .7rem var(--mono);letter-spacing:.13em;text-transform:uppercase;margin-bottom:8px}
+.context p{font:.75rem/1.45 var(--mono);color:#AEBBD0;margin:0 0 10px}
+.context input{width:100%;min-height:52px;border:1px solid #56657D;background:var(--ink2);color:#fff;padding:0 14px}
+.context input::placeholder{color:#8190A8}
+
+/* FINAL */
+#final{grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr)}
+.final-copy{padding:clamp(44px,7vw,90px);display:flex;flex-direction:column;justify-content:center}
+.final-card{background:var(--ink);color:#fff;padding:30px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.final-card:before{content:"";position:absolute;inset:0;background:linear-gradient(rgba(95,212,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(95,212,255,.07) 1px,transparent 1px);background-size:36px 36px}
+.card-inner{position:relative;z-index:1;border:1px solid #42506A;background:rgba(7,17,31,.9);padding:28px;width:min(100%,520px);border-left:6px solid var(--pink)}
+.card-label{font:900 .66rem var(--mono);letter-spacing:.14em;color:var(--blue);text-transform:uppercase}
+.card-object{font:500 clamp(2.4rem,5vw,4.8rem)/.95 var(--serif);margin:16px 0 22px}
+.card-context{font-size:1.1rem;line-height:1.5;color:#E7ECF5}
+.card-context em{color:var(--pink);font-style:normal}
+.final-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+
+/* DIALOG */
+dialog{border:1px solid #56657D;border-radius:0;background:#fff;color:var(--ink);max-width:650px;width:min(calc(100% - 28px),650px);padding:0}
+dialog::backdrop{background:rgba(0,0,0,.72)}
+.dialog{padding:24px}.dialog-head{display:flex;justify-content:space-between;gap:16px;align-items:center}.dialog-head h3{margin:0}
+.close{width:40px;height:40px;border:1px solid var(--ink);background:#fff;font-size:1.4rem}
+.dialog p,.dialog li{color:#414B5B;line-height:1.55}
+
+@media(max-width:900px){
+  #intro,#final,.scan-grid{grid-template-columns:1fr}
+  .intro-copy{border-right:0;border-bottom:1px solid var(--line)}
+  .lab-panel{min-height:360px}
+  .vision{min-height:58vh;border-right:0;border-bottom:1px solid #34415A}
+  .console{min-height:420px}
+  .reveal-grid{grid-template-columns:1fr}
+  .reveal-col:first-child{border-right:0;border-bottom:1px solid #42506A}
+  .context{grid-template-columns:1fr}
+  .context .cta{width:100%}
+}
+@media(max-width:560px){
+  .mast{grid-template-columns:auto 1fr;padding:0 14px}.product{display:none}.utility{justify-self:end}
+  .intro-copy,.final-copy{padding:38px 20px}
+  h1{font-size:clamp(3.5rem,17vw,5.5rem)}
+  .lab-panel,.console,.final-card{padding:22px 20px}
+  .camera-message{max-width:calc(100% - 36px)}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Reveal simplification */
+.compact-reveal{padding-top:10px;padding-bottom:10px}
+.compact-grid{min-height:0}
+.compact-col{padding:clamp(22px,3vw,34px)}
+.compact-list .reveal-item{padding:10px 0}
+.compact-miss{gap:9px}
+.compact-miss .miss-item{font-size:.98rem}
+.compact-thesis{
+  padding-top:24px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:22px
+}
+.compact-thesis h2{margin:0}
+.restart-reveal{flex:0 0 auto;min-width:180px}
+@media(max-width:760px){
+  .compact-thesis{align-items:stretch;flex-direction:column}
+  .restart-reveal{width:100%}
+}
+
+
+/* Interpretation reveal */
+.wow-reveal{padding:0}
+.reveal-topline{
+  display:flex;justify-content:space-between;gap:18px;align-items:center;
+  padding:12px 0 16px;font:800 .65rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#AEBBD0
+}
+.guess-warning{color:var(--pink)}
+.wow-grid{display:grid;grid-template-columns:.8fr 1.2fr;border:1px solid #42506A}
+.wow-panel{padding:clamp(24px,4vw,42px)}
+.saw-panel{border-right:1px solid #42506A}
+.guess-panel{background:#0B1728}
+.guess-panel .kicker{color:var(--pink)}
+.guess-panel blockquote{
+  margin:0;font:500 clamp(2rem,4vw,4rem)/1.04 var(--serif);letter-spacing:-.04em;color:#fff
+}
+.guess-note{margin:20px 0 0;color:#AEBBD0;font:.74rem/1.5 var(--mono);max-width:58ch}
+.reality-block{padding:26px 0;border-bottom:1px solid #42506A}
+.reality-block label{
+  display:block;margin-bottom:10px;color:#fff;font:900 .7rem var(--mono);letter-spacing:.13em;text-transform:uppercase
+}
+.reality-entry{display:grid;grid-template-columns:1fr auto;gap:12px}
+.reality-entry input{
+  min-height:56px;border:1px solid #56657D;background:#0B1728;color:#fff;padding:0 15px;font-size:1rem
+}
+.reality-entry input::placeholder{color:#8190A8}
+.reveal-skip{color:#AEBBD0;margin-top:10px;font:700 .72rem var(--mono)}
+.comparison{
+  margin-top:26px;padding:clamp(24px,4vw,38px);border:1px solid #42506A;border-left:6px solid var(--pink);background:#0B1728
+}
+.comparison-label{color:var(--pink);font:900 .68rem var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.actual-quote{margin:16px 0 26px;font:500 clamp(1.5rem,3vw,2.7rem)/1.12 var(--serif);color:#fff}
+.comparison h2{font-size:clamp(2.8rem,5.5vw,5.6rem);margin:0;color:#fff}
+.comparison h2 strong{color:var(--blue);font-weight:500}
+.comparison p{color:#AEBBD0;margin:16px 0 0}
+.reveal-footer{
+  padding-top:26px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px
+}
+.reveal-thesis-line{margin:0;color:#fff;font:500 clamp(1.8rem,3.8vw,3.8rem)/1 var(--serif);letter-spacing:-.04em}
+.reveal-thesis-line strong{color:var(--blue);font-weight:500}
+@media(max-width:800px){
+  .wow-grid{grid-template-columns:1fr}.saw-panel{border-right:0;border-bottom:1px solid #42506A}
+  .reality-entry{grid-template-columns:1fr}.reality-entry .cta{width:100%}
+  .reveal-footer{align-items:stretch;flex-direction:column}.restart-reveal{width:100%}
+  .reveal-topline{align-items:flex-start;flex-direction:column}
+}
+
+
+/* Simplified interpretation ending */
+.comparison{margin-top:26px}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header class="mast">
+  <img class="logo" src="../../assets/brand/itsbad-labs-logo.svg" alt="ITSBAD Labs">
+  <div class="product">webAI / AI Blind Spot</div>
+  <button class="utility" id="howBtn" type="button">How it works</button>
+</header>
+
+<main>
+<section id="intro" class="stage active">
+  <div class="intro-copy">
+    <p class="eyebrow">Observation ≠ understanding</p>
+    <h1>I can see.<br>I can hear.<br>I cannot understand.</h1>
+    <p class="lead">Give AI a few seconds with your world. Let it see or hear something—and discover what perception still leaves out.</p>
+    <div class="intro-actions">
+      <button class="cta" id="startBtn" type="button">Let the machine look →</button>
+      <button class="text-link" id="voiceIntro" type="button">Use voice instead</button><button class="text-link" id="manualIntro" type="button">Choose an object instead</button>
+    </div>
+    <p class="small intro-meta">Camera optional · No account · Camera frames are not intentionally uploaded by this page</p>
+  </div>
+  <aside class="lab-panel" aria-hidden="true">
+    <div class="panel-label">ITSBAD LABS / EXPERIMENT 01</div>
+    <div class="manifesto"><p>The model gets <strong>signals.</strong><br>You live the <strong>context.</strong></p></div>
+    <div class="rules">
+      <div class="rule"><b>01</b><span>Let the machine see or hear.</span></div>
+      <div class="rule"><b>02</b><span>See what the label leaves out.</span></div>
+      <div class="rule"><b>03</b><span>Put the human meaning back in.</span></div>
+    </div>
+  </aside>
+</section>
+
+<section id="scan" class="stage">
+  <div class="scan-grid">
+    <div class="vision">
+      <video id="video" autoplay playsinline muted aria-hidden="true"></video>
+      <canvas id="overlay" aria-label="Object detection overlay"></canvas>
+      <div class="scan-beam" aria-hidden="true"></div>
+      <div class="scan-head"><span>Machine observation</span><span class="live">● local model</span></div>
+      <div class="camera-message" id="cameraMessage">Waiting for camera permission…</div>
+    </div>
+    <aside class="console">
+      <div class="console-top">
+        <p class="eyebrow">Look</p>
+        <h3>Show the machine your world.</h3>
+        <p class="lead">Point your camera at a few ordinary things. When you’re ready, freeze what AI sees.</p>
+      </div>
+      <div class="small" style="margin-top:14px">Percentages show the model’s confidence in its label—not the probability that the label is correct.</div><div id="objects" class="objects"><div class="empty">Preparing object detection…</div></div>
+      <div id="scanError" class="error" hidden>Camera isn't available here. You can still complete the experience without it.</div>
+      <div class="scan-actions">
+        <button class="cta" id="freezeBtn" type="button" disabled>Freeze what AI sees →</button>
+        <button class="secondary" id="voiceScan" type="button">Use voice instead</button><button class="secondary" id="manualScan" type="button">Choose an object instead</button>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section id="reveal" class="stage">
+  <div class="reveal-wrap wow-reveal">
+    <div class="reveal-topline">
+      <span id="revealModeLabel">FROZEN / MACHINE INTERPRETATION</span>
+      <span class="guess-warning">A plausible guess — not a fact</span>
+    </div>
+
+    <div class="wow-grid">
+      <div class="wow-panel saw-panel">
+        <div class="kicker" id="inputKicker">AI labeled</div>
+        <div class="small" id="inputExplainer" style="color:#AEBBD0;margin-bottom:12px">Confidence reflects how strongly the model matched a known category. It can still be wrong.</div>
+        <div id="revealSeen" class="reveal-list compact-list"></div>
+      </div>
+
+      <div class="wow-panel guess-panel">
+        <div class="kicker" id="guessKicker">AI guessed</div>
+        <blockquote id="sceneGuess">“A scene could be interpreted several ways.”</blockquote>
+        <p class="guess-note">The model has labels. This story is only one possible interpretation of them.</p>
+      </div>
+    </div>
+
+    <div class="comparison" id="comparison">
+      <div class="comparison-label">The blind spot</div>
+      <h2 id="blindSpotHeadline">Same pixels.<br><strong>Different reality.</strong></h2>
+      <p id="blindSpotCopy">The model can recognize patterns and build a plausible story. High confidence does not guarantee a correct label—and a correct label still does not equal understanding.</p>
+    </div>
+
+    <div class="reveal-footer">
+      <p class="reveal-thesis-line" id="revealThesis">The machine had <strong>data.</strong> You had <strong>context.</strong></p>
+      <button class="secondary restart-reveal" id="againBtn" type="button">Run it again</button>
+    </div>
+  </div>
+</section>
+
+
+</main>
+</div>
+
+<dialog id="howDialog" aria-labelledby="howTitle">
+  <div class="dialog">
+    <div class="dialog-head"><h3 id="howTitle">How this works</h3><button class="close" id="closeDialog" aria-label="Close">×</button></div>
+    <p><strong>Camera:</strong> permission is requested only after you choose to begin. The camera feed stays in the page and is analyzed with a browser-loaded COCO-SSD object-detection model. This page does not intentionally record or upload camera frames.</p>
+    <p><strong>What AI does:</strong> it detects visible object categories and reports confidence. After you freeze the scene, this prototype creates one deliberately limited, plausible interpretation from those labels to demonstrate how easily recognition can be mistaken for understanding. The interpretation is not presented as fact.</p><p><strong>What it does not do:</strong> it does not identify who you are or infer sensitive personal traits such as health, race, age, emotion, personality, or identity.</p>
+    <p><strong>Don't want camera access?</strong> The “choose an object instead” path preserves the same core idea without using a sensor.</p>
+  </div>
+</dialog>
+
+<dialog id="voiceDialog" aria-labelledby="voiceTitle">
+  <div class="dialog">
+    <div class="dialog-head"><h3 id="voiceTitle">Say one object</h3><button class="close" id="closeVoice" aria-label="Close">×</button></div>
+    <p>Say one ordinary object around you—like “chair,” “phone,” “book,” or “cup.”</p>
+    <div id="voiceState" class="error" style="border-left-color:var(--blue);background:#F1FBFF">Ready when you are.</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
+      <button class="cta" id="listenBtn" type="button">Listen →</button>
+      <button class="secondary" id="voiceToManual" type="button">Choose instead</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="manualDialog" aria-labelledby="manualTitle">
+  <div class="dialog">
+    <div class="dialog-head"><h3 id="manualTitle">Choose one object</h3><button class="close" id="closeManual" aria-label="Close">×</button></div>
+    <p>Pick something that could be around you right now.</p>
+    <div id="manualChoices" style="display:flex;flex-wrap:wrap;gap:10px"></div>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  "use strict";
+  const stages=[...document.querySelectorAll(".stage")];
+  const video=document.getElementById("video");
+  const overlay=document.getElementById("overlay");
+  const ctx=overlay.getContext("2d");
+  const objectsEl=document.getElementById("objects");
+  const freezeBtn=document.getElementById("freezeBtn");
+  const cameraMessage=document.getElementById("cameraMessage");
+  const scanError=document.getElementById("scanError");
+  const revealSeen=document.getElementById("revealSeen");
+  const revealModeLabel=document.getElementById("revealModeLabel");
+  const inputKicker=document.getElementById("inputKicker");
+  const inputExplainer=document.getElementById("inputExplainer");
+  const blindSpotHeadline=document.getElementById("blindSpotHeadline");
+  const blindSpotCopy=document.getElementById("blindSpotCopy");
+  const revealThesis=document.getElementById("revealThesis");
+  const sceneGuess=document.getElementById("sceneGuess");
+  const howDialog=document.getElementById("howDialog");
+  const manualDialog=document.getElementById("manualDialog");
+  const voiceDialog=document.getElementById("voiceDialog");
+  const voiceState=document.getElementById("voiceState");
+  let recognition=null;
+  const manualChoices=document.getElementById("manualChoices");
+  const choices=["chair","phone","book","cup","plant","backpack","laptop","dog"];
+  let stream=null,model=null,running=false,timer=null;
+  let best=new Map();
+  let interactionMode="camera";
+  let lastVoiceTranscript="";
+
+  function show(id){
+    stages.forEach(s=>s.classList.toggle("active",s.id===id));
+    window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  }
+  function stopCamera(){
+    running=false;
+    if(timer) clearTimeout(timer);
+    timer=null;
+    if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
+    video.srcObject=null;
+  }
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+  async function start(){
+    interactionMode="camera"; lastVoiceTranscript="";
+    show("scan"); best.clear(); renderObjects(); scanError.hidden=true; freezeBtn.disabled=true;
+    cameraMessage.textContent="Waiting for camera permission…";
+    try{
+      if(!navigator.mediaDevices?.getUserMedia) throw new Error("Camera unsupported");
+      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1280},height:{ideal:960}},audio:false});
+      video.srcObject=stream; await video.play();
+      cameraMessage.textContent="Camera ready · loading local object detection…";
+      if(!window.cocoSsd) throw new Error("Object detection library unavailable");
+      model=model||await window.cocoSsd.load({base:"lite_mobilenet_v2"});
+      running=true; cameraMessage.textContent="AI is looking · point at ordinary objects";
+      detect();
+    }catch(err){
+      scanError.hidden=false;cameraMessage.textContent="Camera path unavailable";
+      objectsEl.innerHTML='<div class="empty">Use “Choose an object instead” to continue.</div>';
+    }
+  }
+  async function detect(){
+    if(!running||!model)return;
+    if(video.readyState>=2){
+      try{
+        const preds=(await model.detect(video,12)).filter(p=>p.score>=.52).sort((a,b)=>b.score-a.score);
+        preds.forEach(p=>{const cur=best.get(p.class);if(!cur||p.score>cur.score)best.set(p.class,{label:p.class,score:p.score,bbox:p.bbox})});
+        draw(preds.slice(0,5));renderObjects();freezeBtn.disabled=best.size===0;
+      }catch(e){}
+    }
+    timer=setTimeout(detect,550);
+  }
+  function draw(preds){
+    const w=video.videoWidth||640,h=video.videoHeight||480;overlay.width=w;overlay.height=h;ctx.clearRect(0,0,w,h);
+    ctx.lineWidth=Math.max(3,w/260);ctx.font=`700 ${Math.max(17,w/42)}px ui-monospace,monospace`;ctx.textBaseline="top";
+    preds.forEach(p=>{
+      const [rawX,y,bw,bh]=p.bbox;const x=w-rawX-bw;ctx.strokeStyle="#5FD4FF";ctx.strokeRect(x,y,bw,bh);
+      const text=`${p.class.toUpperCase()} · CONF ${Math.round(p.score*100)}%`;const tw=ctx.measureText(text).width+16;const ty=Math.max(0,y-30);
+      ctx.fillStyle="rgba(7,17,31,.9)";ctx.fillRect(Math.max(0,x),ty,tw,30);ctx.fillStyle="#5FD4FF";ctx.fillText(text,Math.max(0,x)+8,ty+5);
+    });
+  }
+  function renderObjects(){
+    const items=[...best.values()].sort((a,b)=>b.score-a.score).slice(0,6);
+    if(!items.length){objectsEl.innerHTML='<div class="empty">Looking for visible objects…</div>';return}
+    objectsEl.innerHTML=items.map((x,i)=>`<div class="object-row"><span class="idx">${String(i+1).padStart(2,"0")}</span><span>${escapeHtml(x.label)}</span><span class="conf">model confidence ${Math.round(x.score*100)}%</span></div>`).join("");
+  }
+  function makeSceneGuess(labels){
+    const set=new Set(labels.map(x=>x.toLowerCase()));
+    const has=(...xs)=>xs.some(x=>set.has(x));
+    let guess="This looks like an ordinary moment in a room — but the labels do not explain what is actually happening.";
+    if(has("person") && has("tv")) guess="A person appears to be spending time near a television — perhaps watching something or relaxing.";
+    else if(has("person") && has("laptop")) guess="A person appears to be working, studying, or using a computer.";
+    else if(has("person") && has("book")) guess="A person appears to be reading, studying, or working with a book.";
+    else if(has("laptop","keyboard","mouse") && has("cup","bottle")) guess="This could be a work or study setup with a drink nearby.";
+    else if(has("couch","chair") && has("tv")) guess="This could be a living space arranged for watching television or relaxing.";
+    else if(has("dining table") && has("cup","bottle","fork","knife","bowl")) guess="This could be a meal, a break, or simply objects left on a table.";
+    else if(has("dog","cat")) guess="A pet appears to be part of this scene, but the model cannot know its role or relationship to you.";
+    else if(has("book")) guess="A book is visible, which could suggest reading, studying, teaching, decorating, or something else entirely.";
+    else if(has("laptop")) guess="A laptop is visible, which could suggest work, study, entertainment, testing, or something else entirely.";
+    return guess;
+  }
+
+  function applyRevealLanguage(){
+    if(interactionMode==="voice"){
+      revealModeLabel.textContent="HEARD / MACHINE INTERPRETATION";
+      inputKicker.textContent="AI heard";
+      inputExplainer.textContent="Speech recognition turned what you said into a label. It can capture words without knowing why you said them or what they mean in context.";
+      blindSpotHeadline.innerHTML='Same words.<br><strong>Different meaning.</strong>';
+      blindSpotCopy.textContent="The system can recognize speech and build a plausible interpretation. Hearing the words still does not mean understanding the situation behind them.";
+      revealThesis.innerHTML='The machine had <strong>words.</strong> You had <strong>context.</strong>';
+      return;
+    }
+    if(interactionMode==="manual"){
+      revealModeLabel.textContent="SUPPLIED / MACHINE INTERPRETATION";
+      inputKicker.textContent="You supplied";
+      inputExplainer.textContent="You gave the system a label directly. Even a perfectly correct label still leaves out purpose, history, relationships, and meaning.";
+      blindSpotHeadline.innerHTML='Same label.<br><strong>Different meaning.</strong>';
+      blindSpotCopy.textContent="A label can be correct and still be incomplete. Knowing what something is does not explain what it means in this moment.";
+      revealThesis.innerHTML='The machine had <strong>a label.</strong> You had <strong>context.</strong>';
+      return;
+    }
+    revealModeLabel.textContent="FROZEN / MACHINE INTERPRETATION";
+    inputKicker.textContent="AI labeled";
+    inputExplainer.textContent="Confidence reflects how strongly the model matched a known category. It can still be wrong.";
+    blindSpotHeadline.innerHTML='Same pixels.<br><strong>Different reality.</strong>';
+    blindSpotCopy.textContent="The model can recognize patterns and build a plausible story. High confidence does not guarantee a correct label—and a correct label still does not equal understanding.";
+    revealThesis.innerHTML='The machine had <strong>data.</strong> You had <strong>context.</strong>';
+  }
+
+  function reveal(){
+    stopCamera();
+    applyRevealLanguage();
+    const items=[...best.values()].sort((a,b)=>(b.score??0)-(a.score??0)).slice(0,6);
+    revealSeen.innerHTML=items.length?items.map((x,i)=>{
+      const confidence=x.score==null?(interactionMode==="voice"?"SPEECH INPUT":"SUPPLIED"):"model confidence "+Math.round(x.score*100)+"%";
+      return `<div class="reveal-item"><span class="num">${String(i+1).padStart(2,"0")}</span><span>${escapeHtml(x.label.toUpperCase())}</span><span>${confidence}</span></div>`;
+    }).join(""):'<div class="reveal-item"><span class="num">01</span><span>OBJECT</span><span>SUPPLIED</span></div>';
+    const labels=items.map(x=>x.label);
+    if(interactionMode==="voice"){
+      const spoken=lastVoiceTranscript||labels.join(" ");
+      sceneGuess.textContent="“You said ‘"+spoken+".’ I can recognize the words, but I still do not know why you said them or what they mean here.”";
+    } else if(interactionMode==="manual"){
+      sceneGuess.textContent="“You supplied the label ‘"+(labels[0]||"object")+".’ That tells me what to call it, but not why it matters.”";
+    } else {
+      sceneGuess.textContent="“"+makeSceneGuess(labels)+"”";
+    }
+    show("reveal");
+  }
+
+  function chooseManual(label){
+    interactionMode="manual"; lastVoiceTranscript="";
+    best=new Map([[label,{label,score:null,bbox:null}]]);
+    manualDialog.close(); reveal();
+  }
+  function stopVoice(){
+    if(recognition){try{recognition.abort()}catch(e){} recognition=null}
+  }
+  function openVoice(){
+    interactionMode="voice";
+    stopCamera(); stopVoice();
+    voiceState.textContent="Ready when you are.";
+    voiceDialog.showModal();
+  }
+  function listenVoice(){
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){
+      voiceState.textContent="Voice recognition is not supported in this browser. Choose an object instead.";
+      return;
+    }
+    stopVoice();
+    recognition=new SR();
+    recognition.lang="en-US";
+    recognition.interimResults=false;
+    recognition.maxAlternatives=1;
+    recognition.onstart=()=>{voiceState.textContent="Listening… say one ordinary object."};
+    recognition.onerror=()=>{voiceState.textContent="I couldn't capture that clearly. Try again or choose an object instead."};
+    recognition.onresult=e=>{
+      const heard=e.results?.[0]?.[0]?.transcript?.trim()||"";
+      lastVoiceTranscript=heard;
+      const label=heard.split(/\s+/).slice(-2).join(" ")||"object";
+      voiceState.textContent=`I heard: “${heard}”`;
+      best=new Map([[label,{label,score:null,bbox:null}]]);
+      setTimeout(()=>{voiceDialog.close();reveal()},450);
+    };
+    try{recognition.start()}catch(e){voiceState.textContent="Voice couldn't start. Choose an object instead."}
+  }
+  function reset(){
+    stopCamera();best.clear();interactionMode="camera";lastVoiceTranscript="";ctx.clearRect(0,0,overlay.width,overlay.height);show("intro");
+  }
+  choices.forEach(label=>{
+    const b=document.createElement("button");b.className="secondary";b.type="button";b.textContent=label;
+    b.addEventListener("click",()=>chooseManual(label));manualChoices.appendChild(b);
+  });
+  document.getElementById("startBtn").addEventListener("click",start);
+  document.getElementById("freezeBtn").addEventListener("click",reveal);
+  document.getElementById("voiceIntro").addEventListener("click",openVoice);
+  document.getElementById("manualIntro").addEventListener("click",()=>manualDialog.showModal());
+  document.getElementById("voiceScan").addEventListener("click",openVoice);
+  document.getElementById("manualScan").addEventListener("click",()=>{stopCamera();manualDialog.showModal()});
+  document.getElementById("againBtn").addEventListener("click",reset);
+  document.getElementById("howBtn").addEventListener("click",()=>howDialog.showModal());
+    document.getElementById("closeDialog").addEventListener("click",()=>howDialog.close());
+  document.getElementById("closeManual").addEventListener("click",()=>manualDialog.close());
+  document.getElementById("closeVoice").addEventListener("click",()=>{stopVoice();voiceDialog.close()});
+  document.getElementById("listenBtn").addEventListener("click",listenVoice);
+  document.getElementById("voiceToManual").addEventListener("click",()=>{stopVoice();voiceDialog.close();manualDialog.showModal()});
+  howDialog.addEventListener("click",e=>{if(e.target===howDialog)howDialog.close()});
+  manualDialog.addEventListener("click",e=>{if(e.target===manualDialog)manualDialog.close()});
+  voiceDialog.addEventListener("click",e=>{if(e.target===voiceDialog){stopVoice();voiceDialog.close()}});
+  window.addEventListener("pagehide",()=>{stopCamera();stopVoice()});
+})();
+</script>
+</body>
+</html>
