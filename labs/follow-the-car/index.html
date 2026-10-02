@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="itsbad-build" content="follow-the-car-20261002-0302">
+<meta name="itsbad-build" content="follow-the-car-20261002-0318">
 <title>Follow the Car — ITSBAD Labs</title>
 <meta name="description" content="A cinematic ALPR literacy experiment from ITSBAD Labs about how vehicle observations can become searchable patterns and consequential alerts.">
 <link rel="canonical" href="https://itsbadlabs.com/labs/follow-the-car/">
@@ -32,7 +32,7 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
 .screen{min-height:100svh;padding-top:58px;position:relative;overflow:hidden}.screen-grid{position:absolute;inset:58px 0 0;background:linear-gradient(rgba(95,212,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(95,212,255,.045) 1px,transparent 1px);background-size:50px 50px;pointer-events:none}
 .intro{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);min-height:100svh;padding-top:58px}.intro-copy{padding:clamp(40px,7vw,88px);display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2}.eyebrow{font:900 .67rem var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--pink);margin:0 0 18px}.intro h1{font:500 clamp(4rem,8vw,7.6rem)/.87 var(--serif);letter-spacing:-.065em;margin:0 0 24px;max-width:8.7ch}.intro .lead{font-size:clamp(1.02rem,1.6vw,1.18rem);line-height:1.6;color:#B8C4D8;max-width:690px}.start{align-self:flex-start;margin-top:12px;min-height:56px;padding:0 22px;border:0;background:#fff;color:var(--ink);font-weight:900;border-bottom:6px solid var(--pink)}.fine{margin-top:16px;color:#8190A8;font:.72rem/1.5 var(--mono)}
 .intro-visual{border-left:1px solid var(--line);background:var(--ink2);display:flex;align-items:center;justify-content:center;padding:32px;position:relative;overflow:hidden}.intro-visual:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 45%,rgba(95,212,255,.12),transparent 28%),radial-gradient(circle at 30% 70%,rgba(255,102,196,.08),transparent 24%)}.target-card{position:relative;z-index:2;width:min(100%,520px);border:1px solid #42506A;background:rgba(5,10,18,.72);padding:24px}.target-label{font:900 .63rem var(--mono);letter-spacing:.14em;color:var(--blue)}.plate{margin:18px 0;border:2px solid #E7ECF5;background:#F7F8FC;color:#07111F;padding:16px;text-align:center;font:900 clamp(2.1rem,4vw,3.8rem) var(--mono);letter-spacing:.14em}.target-line{display:flex;justify-content:space-between;gap:20px;padding:10px 0;border-top:1px solid #26364E;font:.72rem var(--mono);color:#AEBBD0}.target-line b{color:#fff}
-.runtime{display:none;min-height:100svh;padding-top:58px}.runtime.active{display:block}.scene{position:absolute;inset:58px 0 0;opacity:0;pointer-events:none;transition:opacity .8s ease,transform .8s ease;transform:scale(1.01)}.scene.active{opacity:1;pointer-events:auto;transform:scale(1)}
+.runtime{display:none;min-height:100svh;padding-top:58px}.runtime.active{display:block}.scene{display:none;position:absolute;inset:58px 0 0;opacity:1;pointer-events:none;transform:none}.scene.active{display:block;pointer-events:auto;z-index:10}
 .scene-inner{height:100%;min-height:calc(100svh - 58px);display:grid}.boot{place-items:center;padding:32px}.boot-box{width:min(760px,100%);font:700 .78rem/1.75 var(--mono);color:#9FB0C7}.boot-line{opacity:0;transform:translateY(6px);transition:.35s}.boot-line.show{opacity:1;transform:none}.boot-line strong{color:var(--blue)}.boot-ready{margin-top:24px;padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:1rem;color:#fff}
 .console-layout{grid-template-columns:minmax(0,1.25fr) minmax(340px,.75fr)}.map{position:relative;overflow:hidden;border-right:1px solid var(--line);background:#04080E}.map:before{content:"";position:absolute;inset:0;background:linear-gradient(rgba(95,212,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(95,212,255,.05) 1px,transparent 1px);background-size:54px 54px}.route{position:absolute;inset:8% 7% 10%}.route svg{width:100%;height:100%}.path-line{stroke:#2B3C55;stroke-width:4;fill:none;stroke-dasharray:8 10}.path-progress{stroke:var(--blue);stroke-width:4;fill:none;stroke-dasharray:8 10;stroke-dashoffset:0;filter:drop-shadow(0 0 6px rgba(95,212,255,.45))}
 .node{position:absolute;width:18px;height:18px;border-radius:50%;background:#152236;border:2px solid #52647E;transform:translate(-50%,-50%);transition:.35s}.node.hit{background:var(--blue);border-color:#fff;box-shadow:0 0 0 9px rgba(95,212,255,.09),0 0 28px rgba(95,212,255,.5)}.node-label{position:absolute;transform:translate(-50%,-50%);font:800 .61rem var(--mono);letter-spacing:.08em;color:#7F90AA;white-space:nowrap}.car{position:absolute;transform:translate(-50%,-50%);font-size:1.9rem;transition:1s cubic-bezier(.2,.78,.2,1);filter:drop-shadow(0 0 14px rgba(255,102,196,.55))}
@@ -485,8 +485,10 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
 
 
 .final-actions{position:relative;z-index:20}
-.scene:not(.active),.scene:not(.active) *{pointer-events:none!important}
-.scene.active{pointer-events:auto}
+.scene:not(.active){display:none!important;pointer-events:none!important;z-index:-1!important}
+.scene:not(.active) *{pointer-events:none!important}
+.scene.active{display:block!important;pointer-events:auto!important;z-index:10!important}
+.scene.active *{pointer-events:auto}
 .scene.active .final-actions button,.scene.active .final-actions a{pointer-events:auto}
 .evidence{scroll-margin-top:64px}
 @media(max-width:600px){
@@ -536,8 +538,13 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
 
 
 
-.scene{visibility:hidden}
-.scene.active{visibility:visible}
+
+
+.runtime{position:relative}
+.runtime>.screen-grid{z-index:0}
+.scene.active{z-index:5}
+.checkpoint.active{z-index:20}
+.choice-card,.learn-submit,.learn-continue{position:relative;z-index:25}
 
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -546,7 +553,7 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
 <div class="app">
 <header class="topbar">
   <img class="logo" src="../../assets/brand/itsbad-labs-logo.svg" alt="ITSBAD Labs">
-  <div class="product" data-build="20261002-0302">LABS / FOLLOW THE CAR</div>
+  <div class="product" data-build="20261002-0318">LABS / FOLLOW THE CAR</div>
   <a class="exit" href="../">Exit</a>
 </header>
 
