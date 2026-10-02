@@ -36,6 +36,20 @@ h1,h2,h3,p{margin-top:0}h1{font:500 clamp(4rem,8vw,7.8rem)/.88 var(--serif);lett
 .retention-callout p{margin:0;color:#AEBBD0;line-height:1.55}
 @media(max-width:700px){.alarm-band,.retention-callout{grid-template-columns:1fr}.alarm-stat{margin:.2rem 0}}
 
+
+.searchable,.wrong-match{margin-top:28px;border:1px solid var(--line);background:#08111E}
+.searchable{padding:clamp(24px,4vw,42px)}
+.searchable-head{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:end}
+.searchable-head h2{font-size:clamp(2.5rem,5vw,5rem);margin-bottom:0}.searchable-head p{color:#AEBBD0;line-height:1.6;margin:0}
+.vehicle-card{margin-top:26px;border:1px solid #42506A;background:#0B1728;padding:24px}
+.machine-label,.wrong-label{font:900 .66rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+.vehicle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#33445E;border:1px solid #33445E;margin-top:16px}
+.vehicle-grid>div{background:#07111F;padding:18px}.vehicle-grid span{display:block;font:800 .63rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#8190A8;margin-bottom:6px}.vehicle-grid strong{font-size:1.05rem}
+.query-box{margin-top:18px;border-left:6px solid var(--pink);background:#140E18;padding:18px;display:grid;gap:6px}.query-box span{font:900 .63rem var(--mono);letter-spacing:.12em;color:var(--pink)}.query-box strong{font-size:1.2rem}.query-box em{font-style:normal;color:#AEBBD0;font-size:.92rem}
+.wrong-match{padding:clamp(24px,4vw,42px);border-color:#5B2D50}.wrong-label{color:var(--pink);margin-bottom:16px}.wrong-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:stretch}.wrong-grid h2{font-size:clamp(2.6rem,5vw,5.2rem)}.wrong-grid p{color:#C5CFDD;line-height:1.6}.wrong-card{background:#180F1A;border:1px solid #6A355E;padding:24px;display:flex;flex-direction:column;justify-content:center}.wrong-card>span{font:900 .66rem var(--mono);letter-spacing:.14em;color:var(--pink)}.wrong-card>strong{font:500 clamp(2rem,4vw,3.8rem)/1 var(--serif);margin:12px 0 16px}.wrong-outcome{margin-top:14px;padding-top:14px;border-top:1px solid #6A355E;font:900 .72rem/1.5 var(--mono);color:#fff}.source-note{margin:18px 0 0!important;color:#AEBBD0!important;font-size:.9rem}.source-note a{color:var(--blue)}
+@media(max-width:800px){.searchable-head,.wrong-grid{grid-template-columns:1fr}.vehicle-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.vehicle-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -50,15 +64,15 @@ h1,h2,h3,p{margin-top:0}h1{font:500 clamp(4rem,8vw,7.8rem)/.88 var(--serif);lett
   <div class="intro-copy">
     <p class="eyebrow">ALPR network experiment</p>
     <h1>Your car can become a timeline.</h1>
-    <p class="lead">One plate read is a record. Repeated reads can become a pattern of where a vehicle appears, when it appears, and which routines begin to emerge.</p>
+    <p class="lead">The plate is only one signal. Vehicle images and characteristics can make a car searchable by what it looks like—and repeated detections can turn those records into a movement pattern.</p>
     <button class="cta" id="startBtn" type="button">See what four cameras can reveal →</button>
     <p class="lead" style="font-size:.9rem;margin-top:18px">This is a fictional simulation. No real plate, location, or person is being tracked.</p>
   </div>
   <aside class="intro-panel">
     <div class="plate">7LABS26</div>
-    <div class="signal-line"><b>DATA POINT 01</b> · plate image</div>
-    <div class="signal-line"><b>DATA POINT 02</b> · date + time</div>
-    <div class="signal-line"><b>DATA POINT 03</b> · camera location</div>
+    <div class="signal-line"><b>VEHICLE DATA</b> · plate + vehicle image</div>
+    <div class="signal-line"><b>VEHICLE ATTRIBUTES</b> · make + model + color + body type + visible features</div>
+    <div class="signal-line"><b>EVENT DATA</b> · date + time + camera location</div>
     <div class="signal-line"><b>QUESTION</b> · how much of a routine can a network reconstruct?</div>
   </aside>
 </section>
@@ -110,10 +124,54 @@ h1,h2,h3,p{margin-top:0}h1{font:500 clamp(4rem,8vw,7.8rem)/.88 var(--serif);lett
       <div class="alarm-copy"><strong>ordinary detections became a behavioral pattern.</strong><br>No single record told the story. The connection between records did.</div>
     </div>
 
+
+    <section class="searchable">
+      <div class="searchable-head">
+        <div>
+          <div class="kicker">The plate is only part of the record</div>
+          <h2>A vehicle can become a searchable description.</h2>
+        </div>
+        <p>Flock says its LPR systems capture license plates plus vehicle characteristics, and its current product materials describe searching by attributes such as make, model, color, body type, and visible features.</p>
+      </div>
+      <div class="vehicle-card">
+        <div class="machine-label">SIMULATED VEHICLE RECORD</div>
+        <div class="vehicle-grid">
+          <div><span>Plate</span><strong>7LABS26</strong></div>
+          <div><span>Make</span><strong>Toyota</strong></div>
+          <div><span>Model</span><strong>RAV4</strong></div>
+          <div><span>Color</span><strong>Black</strong></div>
+          <div><span>Body type</span><strong>SUV</strong></div>
+          <div><span>Visible feature</span><strong>Roof rack</strong></div>
+        </div>
+        <div class="query-box">
+          <span>SEARCH QUERY</span>
+          <strong>black Toyota SUV + roof rack</strong>
+          <em>→ matching vehicle events can be surfaced even when the plate is partial, missing, or not the only search clue.</em>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrong-match">
+      <div class="wrong-label">DOCUMENTED CONSEQUENCE</div>
+      <div class="wrong-grid">
+        <div>
+          <h2>What happens when the data is wrong?</h2>
+          <p>In Plymouth, Minnesota, in June 2026, Flock cameras twice flagged a vehicle after a stolen-plate record had been entered incorrectly into a national database. The driver was confronted by multiple police vehicles and patted down before officers determined the underlying database entry was wrong.</p>
+        </div>
+        <div class="wrong-card">
+          <span>ALERT</span>
+          <strong>STOLEN PLATE MATCH</strong>
+          <p>Underlying record: incomplete plate characters entered into the database.</p>
+          <div class="wrong-outcome">REAL-WORLD RESULT → police stop of an innocent driver</div>
+        </div>
+      </div>
+      <p class="source-note">Flock told CBS Minnesota that incidents like this are rare and that an alert should be one part of an investigation, not the whole basis for a stop. <a href="https://www.cbsnews.com/minnesota/news/flock-cameras-wrongly-flag-plates-as-stolen/" target="_blank" rel="noopener">Read the report ↗</a></p>
+    </section>
+
     <div class="fact-grid">
       <div class="fact">
         <h3>Safeguards Flock says it uses</h3>
-        <p>Flock's current LPR policy says LPR data can include plate and vehicle images, plate number and state, vehicle characteristics, date, time, and camera location. It says customer queries are audit-logged and that LPR data is hard-deleted on a rolling 7-day basis by default, subject to customer law or policy. <a href="https://www.flocksafety.com/legal/lpr-policy" target="_blank" rel="noopener">Read the policy ↗</a></p>
+        <p>Flock's current LPR policy says LPR data can include plate and vehicle images, plate number and state, vehicle characteristics such as color and make, date, time, and camera location. Flock also markets vehicle-description search using attributes including make, model, color, body type, and other visible characteristics. It says customer queries are audit-logged and that LPR data is hard-deleted on a rolling 7-day basis by default, subject to customer law or policy. <a href="https://www.flocksafety.com/legal/lpr-policy" target="_blank" rel="noopener">Read the policy ↗</a></p>
       </div>
       <div class="fact">
         <h3>Why civil-liberties critics remain concerned</h3>
@@ -127,7 +185,7 @@ h1,h2,h3,p{margin-top:0}h1{font:500 clamp(4rem,8vw,7.8rem)/.88 var(--serif);lett
         <li>How long is data retained?</li>
         <li>Who can search it, and are searches audited?</li>
         <li>Which agencies or networks can receive shared data?</li>
-        <li>What happens after a low-confidence or incorrect read?</li>
+        <li>What happens after an incorrect plate read, vehicle match, or database entry?</li>
         <li>What public policy governs use, access, and oversight?</li>
       </ul>
     </div>
