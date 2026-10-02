@@ -497,10 +497,9 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
 .checkpoint h2{font:500 clamp(2.6rem,5.5vw,5.3rem)/.94 var(--serif);letter-spacing:-.055em;margin:0 0 14px}
 .checkpoint-lead{color:#AEBBD0;line-height:1.55;margin:0 0 18px;max-width:680px}
 .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.choice-grid label{min-height:54px;border:1px solid #33445E;background:#08111E;padding:13px 14px;display:flex;align-items:center;gap:10px;font:800 .74rem/1.35 var(--mono);cursor:pointer}
-.choice-grid label:has(input:checked){border-color:var(--blue);background:#0D1A2B}
-.choice-grid input{width:18px;height:18px;accent-color:#5FD4FF;flex:none}
-.choice-grid.multi label:nth-child(5){grid-column:1/-1}
+.choice-card{min-height:54px;border:1px solid #33445E;background:#08111E;color:#fff;padding:13px 14px;display:flex;align-items:center;text-align:left;font:800 .74rem/1.35 var(--mono);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.choice-card.selected,.choice-card[aria-pressed="true"]{border-color:var(--blue);background:#0D1A2B;box-shadow:inset 4px 0 0 var(--blue)}
+.choice-grid.multi .choice-card:nth-child(5){grid-column:1/-1}
 .learn-submit,.learn-continue{min-height:50px;border:0;background:#fff;color:#07111F;font-weight:900;padding:0 18px;border-bottom:5px solid var(--pink)}
 .learn-submit{grid-column:1/-1;margin-top:4px}
 .learning-reveal{margin-top:16px;border:1px solid #33445E;background:#08111E;padding:16px}
@@ -518,7 +517,7 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
   .checkpoint-lead{font-size:.88rem;margin-bottom:12px}
   .choice-grid{grid-template-columns:1fr;gap:6px}
   .choice-grid.multi label:nth-child(5){grid-column:auto}
-  .choice-grid label{min-height:44px;padding:9px 10px;font-size:.67rem}
+  .choice-card{min-height:44px;padding:9px 10px;font-size:.67rem}
   .learn-submit{grid-column:auto;min-height:46px}
   .learning-reveal{padding:11px;margin-top:10px}
   .learn-row{grid-template-columns:105px 1fr;gap:8px;padding:6px 0;font-size:.62rem}
@@ -529,11 +528,6 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
 }
 
 
-.choice-grid label{position:relative;touch-action:manipulation;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.choice-grid label.selected{border-color:var(--blue);background:#0D1A2B}
-.choice-grid label input{pointer-events:none}
-.choice-grid label span{pointer-events:none}
-.choice-grid label:active{transform:scale(.995)}
 
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -618,14 +612,14 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
         <div class="checkpoint-step">CHECKPOINT 1 OF 3 · OBSERVATION</div>
         <h2>What does the system actually know?</h2>
         <p class="checkpoint-lead">Four detections are now in the record. Select everything the observations themselves can establish.</p>
-        <form class="choice-grid multi" id="cp1Form">
-          <label><input type="checkbox" name="know" value="where"><span>Where the vehicle appeared</span></label>
-          <label><input type="checkbox" name="know" value="looks"><span>What the vehicle looks like</span></label>
-          <label><input type="checkbox" name="know" value="driver"><span>Who was driving</span></label>
-          <label><input type="checkbox" name="know" value="why"><span>Why the vehicle was there</span></label>
-          <label><input type="checkbox" name="know" value="crime"><span>Whether the driver committed a crime</span></label>
-          <button class="learn-submit" type="submit">Check my thinking →</button>
-        </form>
+        <div class="choice-grid multi" id="cp1Choices" role="group" aria-label="Select everything the observations can establish">
+          <button class="choice-card" type="button" data-group="cp1" data-value="where" aria-pressed="false">Where the vehicle appeared</button>
+          <button class="choice-card" type="button" data-group="cp1" data-value="looks" aria-pressed="false">What the vehicle looks like</button>
+          <button class="choice-card" type="button" data-group="cp1" data-value="driver" aria-pressed="false">Who was driving</button>
+          <button class="choice-card" type="button" data-group="cp1" data-value="why" aria-pressed="false">Why the vehicle was there</button>
+          <button class="choice-card" type="button" data-group="cp1" data-value="crime" aria-pressed="false">Whether the driver committed a crime</button>
+          <button class="learn-submit" id="cp1Submit" type="button">Check my thinking →</button>
+        </div>
         <div class="learning-reveal" id="cp1Reveal" hidden>
           <div class="learn-row observed"><span>OBSERVED</span><strong>Vehicle characteristics · time · location</strong></div>
           <div class="learn-row inferred"><span>INFERRED</span><strong>Possible routine or recurring pattern</strong></div>
@@ -676,13 +670,13 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
         <div class="checkpoint-step">CHECKPOINT 2 OF 3 · INTERPRETATION</div>
         <h2>The same vehicle repeatedly appears near a medical clinic.</h2>
         <p class="checkpoint-lead">What can those records establish?</p>
-        <form class="choice-grid" id="cp2Form">
-          <label><input type="radio" name="clinic" value="patient"><span>The driver is a patient</span></label>
-          <label><input type="radio" name="clinic" value="employee"><span>The driver works there</span></label>
-          <label><input type="radio" name="clinic" value="treatment"><span>Someone in the vehicle receives treatment there</span></label>
-          <label><input type="radio" name="clinic" value="unknown"><span>We cannot determine why the vehicle is there</span></label>
-          <button class="learn-submit" type="submit">Reveal the distinction →</button>
-        </form>
+        <div class="choice-grid" id="cp2Choices" role="radiogroup" aria-label="What can those records establish?">
+          <button class="choice-card" type="button" data-group="cp2" data-value="patient" aria-pressed="false">The driver is a patient</button>
+          <button class="choice-card" type="button" data-group="cp2" data-value="employee" aria-pressed="false">The driver works there</button>
+          <button class="choice-card" type="button" data-group="cp2" data-value="treatment" aria-pressed="false">Someone in the vehicle receives treatment there</button>
+          <button class="choice-card" type="button" data-group="cp2" data-value="unknown" aria-pressed="false">We cannot determine why the vehicle is there</button>
+          <button class="learn-submit" id="cp2Submit" type="button">Reveal the distinction →</button>
+        </div>
         <div class="learning-reveal" id="cp2Reveal" hidden>
           <div class="lesson-equation"><strong>LOCATION OBSERVED</strong><span>≠</span><strong>MEANING KNOWN</strong></div>
           <p id="cp2Feedback">A repeated location can support a pattern. It does not establish the reason for the visit.</p>
@@ -735,13 +729,13 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
         <div class="checkpoint-alert">POSSIBLE STOLEN VEHICLE MATCH</div>
         <h2>An automated system has generated an alert.</h2>
         <p class="checkpoint-lead">What does the alert establish by itself?</p>
-        <form class="choice-grid" id="cp3Form">
-          <label><input type="radio" name="alertMeaning" value="proof"><span>The vehicle is definitely stolen</span></label>
-          <label><input type="radio" name="alertMeaning" value="driver"><span>The current driver committed the theft</span></label>
-          <label><input type="radio" name="alertMeaning" value="lead"><span>It is a lead that still needs verification</span></label>
-          <label><input type="radio" name="alertMeaning" value="stop"><span>It proves a police stop is justified</span></label>
-          <button class="learn-submit" type="submit">Check the evidence chain →</button>
-        </form>
+        <div class="choice-grid" id="cp3Choices" role="radiogroup" aria-label="What does the alert establish by itself?">
+          <button class="choice-card" type="button" data-group="cp3" data-value="proof" aria-pressed="false">The vehicle is definitely stolen</button>
+          <button class="choice-card" type="button" data-group="cp3" data-value="driver" aria-pressed="false">The current driver committed the theft</button>
+          <button class="choice-card" type="button" data-group="cp3" data-value="lead" aria-pressed="false">It is a lead that still needs verification</button>
+          <button class="choice-card" type="button" data-group="cp3" data-value="stop" aria-pressed="false">It proves a police stop is justified</button>
+          <button class="learn-submit" id="cp3Submit" type="button">Check the evidence chain →</button>
+        </div>
         <div class="learning-reveal" id="cp3Reveal" hidden>
           <div class="lesson-equation"><strong>ALERT</strong><span>≠</span><strong>VERIFICATION</strong></div>
           <p id="cp3Feedback">An alert is one input in an investigation. The underlying record and supporting evidence still matter.</p>
@@ -883,10 +877,10 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
     document.getElementById('finalSub').classList.remove('show');
     document.getElementById('finalActions').classList.remove('show');
     document.getElementById('evidence').classList.remove('open');
-    ['cp1Form','cp2Form','cp3Form'].forEach(id=>document.getElementById(id).reset());
     ['cp1Reveal','cp2Reveal','cp3Reveal'].forEach(id=>document.getElementById(id).hidden=true);
-    document.querySelectorAll('.choice-grid').forEach(form=>form.hidden=false);
-    document.querySelectorAll('.choice-grid label').forEach(label=>{label.classList.remove('selected');label.setAttribute('aria-checked','false')});
+    ['cp1Choices','cp2Choices','cp3Choices'].forEach(id=>document.getElementById(id).hidden=false);
+    document.querySelectorAll('.choice-card').forEach(btn=>{btn.classList.remove('selected');btn.setAttribute('aria-pressed','false')});
+    selections.cp1.clear(); selections.cp2=null; selections.cp3=null;
     progress.style.width='0';
   }
   async function run(){
@@ -946,74 +940,63 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
 
 
 
-  document.querySelectorAll('.choice-grid label').forEach(label=>{
-    const input=label.querySelector('input');
-    label.setAttribute('role', input.type==='radio' ? 'radio' : 'checkbox');
-    label.setAttribute('tabindex','0');
-    label.setAttribute('aria-checked','false');
+  const selections={cp1:new Set(),cp2:null,cp3:null};
 
-    function applySelection(){
-      if(input.type==='radio'){
-        document.querySelectorAll('input[name="'+input.name+'"]').forEach(peer=>{
-          peer.checked=false;
-          const peerLabel=peer.closest('label');
-          peerLabel.classList.remove('selected');
-          peerLabel.setAttribute('aria-checked','false');
-        });
-        input.checked=true;
-        label.classList.add('selected');
-        label.setAttribute('aria-checked','true');
+  document.querySelectorAll('.choice-card').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const group=btn.dataset.group;
+      const value=btn.dataset.value;
+
+      if(group==='cp1'){
+        if(selections.cp1.has(value)){
+          selections.cp1.delete(value);
+          btn.classList.remove('selected');
+          btn.setAttribute('aria-pressed','false');
+        }else{
+          selections.cp1.add(value);
+          btn.classList.add('selected');
+          btn.setAttribute('aria-pressed','true');
+        }
       }else{
-        input.checked=!input.checked;
-        label.classList.toggle('selected',input.checked);
-        label.setAttribute('aria-checked',String(input.checked));
-      }
-    }
-
-    label.addEventListener('click',(ev)=>{
-      ev.preventDefault();
-      applySelection();
-    });
-
-    label.addEventListener('keydown',(ev)=>{
-      if(ev.key===' ' || ev.key==='Enter'){
-        ev.preventDefault();
-        applySelection();
+        document.querySelectorAll('.choice-card[data-group="'+group+'"]').forEach(peer=>{
+          peer.classList.remove('selected');
+          peer.setAttribute('aria-pressed','false');
+        });
+        selections[group]=value;
+        btn.classList.add('selected');
+        btn.setAttribute('aria-pressed','true');
       }
     });
   });
 
-  document.getElementById('cp1Form').addEventListener('submit',(ev)=>{
-    ev.preventDefault();
-    const picked=[...new FormData(ev.currentTarget).getAll('know')];
+  document.getElementById('cp1Submit').addEventListener('click',()=>{
+    const picked=[...selections.cp1];
     if(!picked.length)return;
     const correct=picked.includes('where')&&picked.includes('looks')&&!picked.includes('driver')&&!picked.includes('why')&&!picked.includes('crime');
     document.getElementById('cp1Feedback').textContent=correct
       ? 'You separated direct observations from claims the records cannot establish.'
       : 'The records directly support where the vehicle appeared and visible vehicle characteristics. Identity, purpose, intent, and guilt require other evidence.';
-    ev.currentTarget.hidden=true;
+    document.getElementById('cp1Choices').hidden=true;
     document.getElementById('cp1Reveal').hidden=false;
   });
 
-  document.getElementById('cp2Form').addEventListener('submit',(ev)=>{
-    ev.preventDefault();
-    const picked=new FormData(ev.currentTarget).get('clinic');
+  document.getElementById('cp2Submit').addEventListener('click',()=>{
+    const picked=selections.cp2;
     if(!picked)return;
     document.getElementById('cp2Feedback').textContent=picked==='unknown'
       ? 'Right: repeated observations can establish a recurring location pattern, but not the reason for the visit.'
       : 'That explanation is possible, but the location record alone cannot establish it. The same observations fit several different stories.';
-    ev.currentTarget.hidden=true;
+    document.getElementById('cp2Choices').hidden=true;
     document.getElementById('cp2Reveal').hidden=false;
   });
 
-  document.getElementById('cp3Form').addEventListener('submit',(ev)=>{
-    ev.preventDefault();
-    const picked=new FormData(ev.currentTarget).get('alertMeaning');
+  document.getElementById('cp3Submit').addEventListener('click',()=>{
+    const picked=selections.cp3;
     if(!picked)return;
     document.getElementById('cp3Feedback').textContent=picked==='lead'
       ? 'Exactly: an alert is a lead, not verification. The underlying record and supporting evidence still matter.'
       : 'The alert signals a possible match. By itself it does not establish theft, driver identity, or the correctness of the underlying record.';
-    ev.currentTarget.hidden=true;
+    document.getElementById('cp3Choices').hidden=true;
     document.getElementById('cp3Reveal').hidden=false;
   });
 
