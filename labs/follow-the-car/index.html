@@ -252,6 +252,209 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
   .final-line{font-size:1.9rem;margin-bottom:8px}
 }
 
+
+/* Mobile precision pass: tuned from real-device screenshots */
+.mobile-target{display:none}
+
+@media(max-width:600px){
+  :root{--bar-h:52px}
+
+  /* The embedded iOS browser already owns its safe-area chrome. */
+  .topbar{
+    height:52px;
+    padding-top:0;
+    grid-template-columns:auto 1fr auto;
+    gap:10px;
+    padding-left:14px;
+    padding-right:14px;
+  }
+  .logo{width:66px}
+  .product{display:none}
+  .exit{
+    grid-column:3;
+    justify-self:end;
+    width:auto;
+    min-width:62px;
+    min-height:32px;
+    padding:.35rem .55rem;
+    font-size:.58rem;
+    text-align:center;
+  }
+
+  /* True one-screen opening: keep the full target card for larger screens. */
+  .intro{
+    height:100svh;
+    min-height:100svh;
+    grid-template-columns:1fr;
+    grid-template-rows:1fr;
+    padding-top:52px;
+  }
+  .intro-copy{
+    height:calc(100svh - 52px);
+    padding:22px 20px calc(18px + env(safe-area-inset-bottom,0px));
+    justify-content:center;
+  }
+  .intro-visual{display:none}
+  .intro h1{
+    font-size:clamp(3.15rem,14.5vw,4.7rem);
+    line-height:.9;
+    max-width:7.4ch;
+    margin-bottom:16px;
+  }
+  .intro .lead{
+    font-size:.98rem;
+    line-height:1.42;
+    margin:0 0 14px;
+  }
+  .mobile-target{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:3px 12px;
+    align-items:baseline;
+    border:1px solid #33445E;
+    border-left:4px solid var(--blue);
+    background:rgba(8,17,30,.84);
+    padding:10px 12px;
+    margin:0 0 12px;
+  }
+  .mobile-target span{
+    grid-column:1/-1;
+    font:900 .58rem var(--mono);
+    letter-spacing:.12em;
+    color:var(--blue);
+  }
+  .mobile-target strong{
+    font:900 1rem var(--mono);
+    letter-spacing:.08em;
+  }
+  .mobile-target em{
+    justify-self:end;
+    font:800 .61rem var(--mono);
+    font-style:normal;
+    color:#AEBBD0;
+    text-align:right;
+  }
+  .start{margin-top:0}
+  .fine{margin-top:9px;font-size:.66rem}
+
+  /* Give the visual story equal weight; eliminate the white dead zone. */
+  .console-layout{
+    height:calc(100svh - 52px);
+    grid-template-rows:52% 48%;
+  }
+  .map{min-height:0}
+  .side{
+    min-height:0;
+    padding:12px 16px calc(10px + env(safe-area-inset-bottom,0px));
+    display:grid;
+    grid-template-rows:auto auto auto auto;
+    align-content:center;
+  }
+  .side .kicker{margin-bottom:5px}
+  .side h2{font-size:1.35rem;margin-bottom:6px}
+  .side p{display:none}
+  .week{margin:5px 0 8px}
+  .day{padding:5px 0;font-size:.52rem}
+  .event{padding:5px 0;font-size:.62rem}
+
+  /* Cleaner map annotation: labels float near nodes without colliding with the vehicle. */
+  .route{inset:12% 10% 14%}
+  .node-label{
+    width:auto;
+    max-width:78px;
+    white-space:nowrap;
+    padding:3px 5px;
+    background:rgba(5,10,18,.78);
+    border:1px solid rgba(95,212,255,.12);
+    border-radius:2px;
+    font-size:.49rem;
+    line-height:1;
+    z-index:3;
+  }
+  .node-label[style*="left:9%"]{transform:translate(-18%,8px)}
+  .node-label[style*="left:36%"]{transform:translate(-50%,9px)}
+  .node-label[style*="left:69%"]{transform:translate(-50%,9px)}
+  .node-label[style*="left:93%"]{transform:translate(-82%,9px)}
+  .node{z-index:4}
+  .car{
+    z-index:5;
+    width:17px;
+    height:28px;
+    border-radius:7px 7px 5px 5px;
+    background:linear-gradient(180deg,#FF66C4 0 23%,#D8E5F2 24% 42%,#FF66C4 43% 100%);
+    border:1px solid #fff;
+    box-shadow:0 0 0 5px rgba(255,102,196,.08),0 0 14px rgba(255,102,196,.5);
+    font-size:0;
+    filter:none;
+  }
+  .car:before,.car:after{
+    content:"";
+    position:absolute;
+    left:-3px;
+    width:3px;
+    height:7px;
+    background:#7F90A8;
+    box-shadow:20px 0 0 #7F90A8;
+  }
+  .car:before{top:5px}
+  .car:after{bottom:5px}
+
+  /* Use the actual viewport rather than leaving large decorative voids. */
+  .profile,.infer,.final{
+    padding-left:16px;
+    padding-right:16px;
+  }
+  .profile .scene-inner,.infer .scene-inner,.final .scene-inner{
+    height:calc(100svh - 52px);
+    min-height:0;
+    align-content:center;
+  }
+  .infer .scene-inner{align-content:start;padding-top:22px}
+  .infer-wrap{align-self:start}
+  .scene-top{margin-bottom:7px}
+
+  /* Keep all five interpretations readable as one deliberate set. */
+  .stories{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:5px;
+    margin-top:7px;
+  }
+  .story{text-align:center;padding:7px 5px}
+  .story:last-child{grid-column:1/-1}
+  .cannot{margin-top:9px}
+
+  /* Let the ending breathe, but center it in the visible browser viewport. */
+  .final .scene-inner{place-items:center}
+  .final-wrap{transform:translateY(-1vh)}
+  .final-line{
+    font-size:clamp(2rem,8.8vw,3rem);
+    line-height:.97;
+    margin-bottom:9px;
+  }
+  .final-sub{margin-top:12px}
+  .final-actions{
+    margin-top:14px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  .final-actions button{width:100%;min-height:44px;font-size:.88rem}
+
+  .progress{bottom:0}
+}
+
+@media(max-width:380px), (max-height:700px) and (max-width:600px){
+  .intro h1{font-size:2.85rem}
+  .intro .lead{font-size:.9rem}
+  .mobile-target{padding:8px 10px}
+  .console-layout{grid-template-rows:50% 50%}
+  .side h2{font-size:1.18rem}
+  .infer .scene-inner{padding-top:14px}
+  .final-line{font-size:1.82rem}
+  .final-actions{grid-template-columns:1fr}
+}
+
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -269,6 +472,7 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
     <p class="eyebrow">ALPR network experiment</p>
     <h1>Your car can become a timeline.</h1>
     <p class="lead">The plate is only one signal. Vehicle images and characteristics can make a car searchable by what it looks like—and repeated detections can turn ordinary movement into a pattern.</p>
+    <div class="mobile-target"><span>SIMULATED VEHICLE</span><strong>7LABS26</strong><em>BLACK TOYOTA RAV4 · ROOF RACK</em></div>
     <button class="start" id="startBtn">Begin simulation →</button>
     <p class="fine">Fictional vehicle. Fictional locations. No real person is being tracked. Approx. 50 seconds.</p>
   </div>
@@ -314,7 +518,7 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
           <div class="node" data-node="1" style="left:36%;top:56%"></div><div class="node-label" style="left:36%;top:62%">WORK AREA</div>
           <div class="node" data-node="2" style="left:69%;top:32%"></div><div class="node-label" style="left:69%;top:38%">CLINIC AREA</div>
           <div class="node" data-node="3" style="left:93%;top:18%"></div><div class="node-label" style="left:93%;top:24%">HOME AREA</div>
-          <div class="car" id="car" style="left:9%;top:80%">🚙</div>
+          <div class="car" id="car" style="left:9%;top:80%" aria-label="simulated vehicle"></div>
         </div>
       </div>
       <aside class="side">
