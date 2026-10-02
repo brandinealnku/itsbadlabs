@@ -489,6 +489,45 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
   .evidence.open{display:block!important}
 }
 
+
+.checkpoint{background:#050A12;padding:clamp(20px,4vw,46px)}
+.checkpoint-inner{place-items:center}
+.checkpoint-wrap{width:min(860px,100%);margin:auto}
+.checkpoint-step{font:900 .66rem var(--mono);letter-spacing:.14em;color:var(--pink);margin-bottom:14px}
+.checkpoint h2{font:500 clamp(2.6rem,5.5vw,5.3rem)/.94 var(--serif);letter-spacing:-.055em;margin:0 0 14px}
+.checkpoint-lead{color:#AEBBD0;line-height:1.55;margin:0 0 18px;max-width:680px}
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.choice-grid label{min-height:54px;border:1px solid #33445E;background:#08111E;padding:13px 14px;display:flex;align-items:center;gap:10px;font:800 .74rem/1.35 var(--mono);cursor:pointer}
+.choice-grid label:has(input:checked){border-color:var(--blue);background:#0D1A2B}
+.choice-grid input{width:18px;height:18px;accent-color:#5FD4FF;flex:none}
+.choice-grid.multi label:nth-child(5){grid-column:1/-1}
+.learn-submit,.learn-continue{min-height:50px;border:0;background:#fff;color:#07111F;font-weight:900;padding:0 18px;border-bottom:5px solid var(--pink)}
+.learn-submit{grid-column:1/-1;margin-top:4px}
+.learning-reveal{margin-top:16px;border:1px solid #33445E;background:#08111E;padding:16px}
+.learn-row{display:grid;grid-template-columns:140px 1fr;gap:14px;padding:9px 0;border-bottom:1px solid #26364E;font:.76rem/1.4 var(--mono)}
+.learn-row:last-of-type{border-bottom:0}.learn-row span{font-weight:900;letter-spacing:.08em}
+.learn-row.observed span{color:var(--blue)}.learn-row.inferred span{color:var(--pink)}.learn-row.unknown span{color:#AEBBD0}
+.learning-reveal p{color:#C6D0DE;line-height:1.5;margin:14px 0}
+.lesson-equation{display:flex;align-items:center;justify-content:center;gap:14px;padding:14px;border:1px solid #33445E;background:#050A12;font:900 .8rem var(--mono);letter-spacing:.08em;text-align:center}
+.lesson-equation span{font:500 2rem var(--serif);color:var(--pink)}
+.checkpoint-alert{display:inline-block;margin-bottom:12px;border:1px solid #713556;background:#160E18;color:var(--pink);padding:9px 12px;font:900 .68rem var(--mono);letter-spacing:.1em}
+@media(max-width:600px){
+  .checkpoint{padding:14px 16px 18px}
+  .checkpoint-inner{align-content:center;min-height:calc(100svh - 52px)}
+  .checkpoint h2{font-size:clamp(2rem,9vw,3rem);margin-bottom:10px}
+  .checkpoint-lead{font-size:.88rem;margin-bottom:12px}
+  .choice-grid{grid-template-columns:1fr;gap:6px}
+  .choice-grid.multi label:nth-child(5){grid-column:auto}
+  .choice-grid label{min-height:44px;padding:9px 10px;font-size:.67rem}
+  .learn-submit{grid-column:auto;min-height:46px}
+  .learning-reveal{padding:11px;margin-top:10px}
+  .learn-row{grid-template-columns:105px 1fr;gap:8px;padding:6px 0;font-size:.62rem}
+  .learning-reveal p{font-size:.78rem;margin:9px 0}
+  .lesson-equation{padding:10px;font-size:.66rem;gap:8px}
+  .lesson-equation span{font-size:1.5rem}
+  .learn-continue{width:100%;min-height:44px;font-size:.78rem}
+}
+
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -508,7 +547,7 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
     <p class="lead">The plate is only one signal. Vehicle images and characteristics can make a car searchable by what it looks like—and repeated detections can turn ordinary movement into a pattern.</p>
     <div class="mobile-target"><span>SIMULATED VEHICLE</span><strong>7LABS26</strong><em>BLACK TOYOTA RAV4 · ROOF RACK</em></div>
     <button class="start" id="startBtn">Begin simulation →</button>
-    <p class="fine">Fictional vehicle. Fictional locations. No real person is being tracked. Approx. 75 seconds.</p>
+    <p class="fine">Fictional vehicle. Fictional locations. No real person is being tracked. Approx. 2 minutes · 3 learning checkpoints.</p>
   </div>
   <aside class="intro-visual">
     <div class="target-card">
@@ -565,6 +604,32 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
     </div>
   </section>
 
+
+  <section class="scene checkpoint" id="checkpoint1">
+    <div class="scene-inner checkpoint-inner">
+      <div class="checkpoint-wrap">
+        <div class="checkpoint-step">CHECKPOINT 1 OF 3 · OBSERVATION</div>
+        <h2>What does the system actually know?</h2>
+        <p class="checkpoint-lead">Four detections are now in the record. Select everything the observations themselves can establish.</p>
+        <form class="choice-grid multi" id="cp1Form">
+          <label><input type="checkbox" name="know" value="where"><span>Where the vehicle appeared</span></label>
+          <label><input type="checkbox" name="know" value="looks"><span>What the vehicle looks like</span></label>
+          <label><input type="checkbox" name="know" value="driver"><span>Who was driving</span></label>
+          <label><input type="checkbox" name="know" value="why"><span>Why the vehicle was there</span></label>
+          <label><input type="checkbox" name="know" value="crime"><span>Whether the driver committed a crime</span></label>
+          <button class="learn-submit" type="submit">Check my thinking →</button>
+        </form>
+        <div class="learning-reveal" id="cp1Reveal" hidden>
+          <div class="learn-row observed"><span>OBSERVED</span><strong>Vehicle characteristics · time · location</strong></div>
+          <div class="learn-row inferred"><span>INFERRED</span><strong>Possible routine or recurring pattern</strong></div>
+          <div class="learn-row unknown"><span>NOT ESTABLISHED</span><strong>Driver identity · intent · purpose · guilt</strong></div>
+          <p id="cp1Feedback"></p>
+          <button class="learn-continue" id="cp1Continue" type="button">Continue the simulation →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="scene profile" id="profile">
     <div class="scene-inner">
       <div class="profile-wrap">
@@ -592,6 +657,29 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
               <div class="attr"><span>Visible feature</span><strong>Roof rack</strong></div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="scene checkpoint" id="checkpoint2">
+    <div class="scene-inner checkpoint-inner">
+      <div class="checkpoint-wrap">
+        <div class="checkpoint-step">CHECKPOINT 2 OF 3 · INTERPRETATION</div>
+        <h2>The same vehicle repeatedly appears near a medical clinic.</h2>
+        <p class="checkpoint-lead">What can those records establish?</p>
+        <form class="choice-grid" id="cp2Form">
+          <label><input type="radio" name="clinic" value="patient"><span>The driver is a patient</span></label>
+          <label><input type="radio" name="clinic" value="employee"><span>The driver works there</span></label>
+          <label><input type="radio" name="clinic" value="treatment"><span>Someone in the vehicle receives treatment there</span></label>
+          <label><input type="radio" name="clinic" value="unknown"><span>We cannot determine why the vehicle is there</span></label>
+          <button class="learn-submit" type="submit">Reveal the distinction →</button>
+        </form>
+        <div class="learning-reveal" id="cp2Reveal" hidden>
+          <div class="lesson-equation"><strong>LOCATION OBSERVED</strong><span>≠</span><strong>MEANING KNOWN</strong></div>
+          <p id="cp2Feedback">A repeated location can support a pattern. It does not establish the reason for the visit.</p>
+          <button class="learn-continue" id="cp2Continue" type="button">See the plausible stories →</button>
         </div>
       </div>
     </div>
@@ -627,6 +715,30 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
             </div>
             <div class="cannot">SYSTEM CANNOT DETERMINE WHICH IS TRUE.</div>
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="scene checkpoint alert-checkpoint" id="checkpoint3">
+    <div class="scene-inner checkpoint-inner">
+      <div class="checkpoint-wrap">
+        <div class="checkpoint-step">CHECKPOINT 3 OF 3 · CONSEQUENCE</div>
+        <div class="checkpoint-alert">POSSIBLE STOLEN VEHICLE MATCH</div>
+        <h2>An automated system has generated an alert.</h2>
+        <p class="checkpoint-lead">What does the alert establish by itself?</p>
+        <form class="choice-grid" id="cp3Form">
+          <label><input type="radio" name="alertMeaning" value="proof"><span>The vehicle is definitely stolen</span></label>
+          <label><input type="radio" name="alertMeaning" value="driver"><span>The current driver committed the theft</span></label>
+          <label><input type="radio" name="alertMeaning" value="lead"><span>It is a lead that still needs verification</span></label>
+          <label><input type="radio" name="alertMeaning" value="stop"><span>It proves a police stop is justified</span></label>
+          <button class="learn-submit" type="submit">Check the evidence chain →</button>
+        </form>
+        <div class="learning-reveal" id="cp3Reveal" hidden>
+          <div class="lesson-equation"><strong>ALERT</strong><span>≠</span><strong>VERIFICATION</strong></div>
+          <p id="cp3Feedback">An alert is one input in an investigation. The underlying record and supporting evidence still matter.</p>
+          <button class="learn-continue" id="cp3Continue" type="button">See a documented consequence →</button>
         </div>
       </div>
     </div>
@@ -696,7 +808,6 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
 
 <script>
 (() => {
-  const TOTAL = 76000;
   const intro = document.getElementById('intro');
   const runtime = document.getElementById('runtime');
   const progress = document.getElementById('progress');
@@ -730,6 +841,9 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
   function later(ms, fn){ const id=setTimeout(fn,ms); timers.push(id); }
   function clearAll(){ timers.forEach(clearTimeout); timers=[]; }
   function scene(id){ scenes.forEach(s=>s.classList.toggle('active',s.id===id)); }
+  function sleep(ms){ return new Promise(resolve=>later(ms,resolve)); }
+  function setProgress(value){ progress.style.width=Math.max(0,Math.min(100,value))+'%'; }
+  function waitForButton(id){ return new Promise(resolve=>{ const b=document.getElementById(id); b.addEventListener('click',resolve,{once:true}); }); }
   function renderWeek(count){
     week.innerHTML=days.map((d,idx)=>{
       const c=points.slice(0,count).filter(p=>p.day===d).length;
@@ -762,53 +876,101 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
     document.getElementById('finalSub').classList.remove('show');
     document.getElementById('finalActions').classList.remove('show');
     document.getElementById('evidence').classList.remove('open');
+    ['cp1Form','cp2Form','cp3Form'].forEach(id=>document.getElementById(id).reset());
+    ['cp1Reveal','cp2Reveal','cp3Reveal'].forEach(id=>document.getElementById(id).hidden=true);
+    document.querySelectorAll('.choice-grid').forEach(form=>form.hidden=false);
     progress.style.width='0';
   }
-  function run(){
-    clearAll();resetVisuals();intro.style.display='none';runtime.classList.add('active');startedAt=Date.now();scene('boot');
-    // Boot: ~6 seconds
-    document.querySelectorAll('.boot-line').forEach((line,i)=>later(500+i*850,()=>line.classList.add('show')));
-    later(5600,()=>scene('tracking'));
+  async function run(){
+    clearAll();resetVisuals();intro.style.display='none';runtime.classList.add('active');startedAt=Date.now();
 
-    // Tracking: detections arrive deliberately, then remain visible long enough to read.
-    points.forEach((p,i)=>later(6700+i*2200,()=>{
+    scene('boot');setProgress(4);
+    document.querySelectorAll('.boot-line').forEach((line,i)=>later(350+i*650,()=>line.classList.add('show')));
+    await sleep(3900);
+
+    scene('tracking');setProgress(10);
+    for(let i=0;i<4;i++){
+      await sleep(i===0?700:1500);
       addDetection(i);
-      if(window.matchMedia('(max-width:600px)').matches){
-        feed.scrollTo({top:0,behavior:'smooth'});
-      }
-    }));
+    }
+    await sleep(1800);
 
-    // Last detection lands at ~26.5s. Hold the complete week for ~5 seconds.
-    later(31800,()=>scene('profile'));
+    scene('checkpoint1');setProgress(24);
+    await waitForButton('cp1Continue');
 
-    // Profile assembly: each attribute appears slowly, then the completed profile holds.
-    attrs.forEach((a,i)=>later(33000+i*800,()=>{
-      a.classList.add('show');
-      document.getElementById('attrCount').textContent=String(i+1)
-    }));
-    later(43000,()=>scene('infer'));
+    scene('tracking');setProgress(30);
+    for(let i=4;i<points.length;i++){
+      await sleep(1350);
+      addDetection(i);
+      if(window.matchMedia('(max-width:600px)').matches){ feed.scrollTo({top:0,behavior:'smooth'}); }
+    }
+    await sleep(2400);
 
-    // Pattern analysis: give each inference time to register.
-    inferenceRows.forEach((r,i)=>later(44200+i*1100,()=>r.classList.add('show')));
-    stories.forEach((st,i)=>later(48800+i*700,()=>st.classList.add('show')));
+    scene('profile');setProgress(46);
+    for(let i=0;i<attrs.length;i++){
+      await sleep(i===0?500:650);
+      attrs[i].classList.add('show');
+      document.getElementById('attrCount').textContent=String(i+1);
+    }
+    await sleep(2200);
 
-    // Keep the fully populated inference scene on screen for several seconds.
-    later(56500,()=>{scene('alert');document.getElementById('alertFlash').classList.add('on')});
+    scene('checkpoint2');setProgress(58);
+    await waitForButton('cp2Continue');
 
-    // Alert consequence: longer reading window.
-    later(65500,()=>scene('final'));
+    scene('infer');setProgress(66);
+    for(let i=0;i<inferenceRows.length;i++){ await sleep(700); inferenceRows[i].classList.add('show'); }
+    for(let i=0;i<stories.length;i++){ await sleep(400); stories[i].classList.add('show'); }
+    await sleep(2200);
 
-    // Final thesis: slower line-by-line reveal, then actions.
-    document.querySelectorAll('.final-line').forEach((line,i)=>later(66600+i*1500,()=>line.classList.add('show')));
-    later(73000,()=>document.getElementById('finalSub').classList.add('show'));
-    later(74800,()=>document.getElementById('finalActions').classList.add('show'));
-    const tick=setInterval(()=>{
-      const elapsed=Date.now()-startedAt;
-      progress.style.width=Math.min(100,(elapsed/TOTAL)*100)+'%';
-      if(elapsed>=TOTAL)clearInterval(tick);
-    },250);
-    timers.push(tick);
+    scene('checkpoint3');setProgress(78);
+    await waitForButton('cp3Continue');
+
+    scene('alert');setProgress(86);
+    document.getElementById('alertFlash').classList.add('on');
+    await sleep(7000);
+
+    scene('final');setProgress(92);
+    const finalLines=[...document.querySelectorAll('.final-line')];
+    for(let i=0;i<finalLines.length;i++){ await sleep(i===0?700:1200); finalLines[i].classList.add('show'); }
+    await sleep(1100);document.getElementById('finalSub').classList.add('show');
+    await sleep(1200);document.getElementById('finalActions').classList.add('show');setProgress(100);
   }
+
+
+  document.getElementById('cp1Form').addEventListener('submit',(ev)=>{
+    ev.preventDefault();
+    const picked=[...new FormData(ev.currentTarget).getAll('know')];
+    if(!picked.length)return;
+    const correct=picked.includes('where')&&picked.includes('looks')&&!picked.includes('driver')&&!picked.includes('why')&&!picked.includes('crime');
+    document.getElementById('cp1Feedback').textContent=correct
+      ? 'You separated direct observations from claims the records cannot establish.'
+      : 'The records directly support where the vehicle appeared and visible vehicle characteristics. Identity, purpose, intent, and guilt require other evidence.';
+    ev.currentTarget.hidden=true;
+    document.getElementById('cp1Reveal').hidden=false;
+  });
+
+  document.getElementById('cp2Form').addEventListener('submit',(ev)=>{
+    ev.preventDefault();
+    const picked=new FormData(ev.currentTarget).get('clinic');
+    if(!picked)return;
+    document.getElementById('cp2Feedback').textContent=picked==='unknown'
+      ? 'Right: repeated observations can establish a recurring location pattern, but not the reason for the visit.'
+      : 'That explanation is possible, but the location record alone cannot establish it. The same observations fit several different stories.';
+    ev.currentTarget.hidden=true;
+    document.getElementById('cp2Reveal').hidden=false;
+  });
+
+  document.getElementById('cp3Form').addEventListener('submit',(ev)=>{
+    ev.preventDefault();
+    const picked=new FormData(ev.currentTarget).get('alertMeaning');
+    if(!picked)return;
+    document.getElementById('cp3Feedback').textContent=picked==='lead'
+      ? 'Exactly: an alert is a lead, not verification. The underlying record and supporting evidence still matter.'
+      : 'The alert signals a possible match. By itself it does not establish theft, driver identity, or the correctness of the underlying record.';
+    ev.currentTarget.hidden=true;
+    document.getElementById('cp3Reveal').hidden=false;
+  });
+
   document.getElementById('startBtn').addEventListener('click',run);
   document.getElementById('againBtn').addEventListener('click',run);
   document.getElementById('evidenceBtn').addEventListener('click',(ev)=>{
