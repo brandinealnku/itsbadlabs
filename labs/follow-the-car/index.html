@@ -140,7 +140,7 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
     padding:6px 0;
     font-size:.64rem;
   }
-  .event:nth-child(n+4){display:none}
+  
   .hud{left:12px;top:10px;font-size:.58rem;gap:8px}
   .retention{left:12px;bottom:10px;padding:8px 10px;font-size:.62rem}
   .route{inset:13% 11% 13%}
@@ -455,6 +455,26 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
   .final-actions{grid-template-columns:1fr}
 }
 
+
+@media(max-width:600px){
+  .side{
+    grid-template-rows:auto auto auto minmax(0,1fr);
+  }
+  .feed{
+    min-height:0;
+    overflow:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    padding-bottom:2px;
+  }
+  .feed::-webkit-scrollbar{display:none}
+  .event{
+    padding:4px 0;
+    font-size:.60rem;
+    line-height:1.2;
+  }
+}
+
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -474,7 +494,7 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
     <p class="lead">The plate is only one signal. Vehicle images and characteristics can make a car searchable by what it looks like—and repeated detections can turn ordinary movement into a pattern.</p>
     <div class="mobile-target"><span>SIMULATED VEHICLE</span><strong>7LABS26</strong><em>BLACK TOYOTA RAV4 · ROOF RACK</em></div>
     <button class="start" id="startBtn">Begin simulation →</button>
-    <p class="fine">Fictional vehicle. Fictional locations. No real person is being tracked. Approx. 50 seconds.</p>
+    <p class="fine">Fictional vehicle. Fictional locations. No real person is being tracked. Approx. 75 seconds.</p>
   </div>
   <aside class="intro-visual">
     <div class="target-card">
@@ -662,7 +682,7 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
 
 <script>
 (() => {
-  const TOTAL = 50000;
+  const TOTAL = 76000;
   const intro = document.getElementById('intro');
   const runtime = document.getElementById('runtime');
   const progress = document.getElementById('progress');
@@ -712,7 +732,7 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
     row.className='event';
     row.innerHTML='<span class="n">'+String(index+1).padStart(2,'0')+'</span><span>'+p.place+'</span><span class="time">'+p.day+' · '+p.time+'</span>';
     feed.prepend(row);
-    const maxRows=window.matchMedia('(max-width:600px)').matches?3:5;while(feed.children.length>maxRows)feed.removeChild(feed.lastChild);
+    const maxRows=window.matchMedia('(max-width:600px)').matches?10:5;while(feed.children.length>maxRows)feed.removeChild(feed.lastChild);
     renderWeek(index+1);
   }
   function resetVisuals(){
@@ -732,19 +752,42 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
   }
   function run(){
     clearAll();resetVisuals();intro.style.display='none';runtime.classList.add('active');startedAt=Date.now();scene('boot');
-    document.querySelectorAll('.boot-line').forEach((line,i)=>later(400+i*650,()=>line.classList.add('show')));
-    later(3900,()=>scene('tracking'));
-    points.forEach((p,i)=>later(4700+i*1800,()=>addDetection(i)));
-    later(23000,()=>scene('profile'));
-    attrs.forEach((a,i)=>later(23800+i*550,()=>{a.classList.add('show');document.getElementById('attrCount').textContent=String(i+1)}));
-    later(28200,()=>scene('infer'));
-    inferenceRows.forEach((r,i)=>later(29000+i*750,()=>r.classList.add('show')));
-    stories.forEach((st,i)=>later(31800+i*450,()=>st.classList.add('show')));
-    later(35200,()=>{scene('alert');document.getElementById('alertFlash').classList.add('on')});
-    later(42200,()=>scene('final'));
-    document.querySelectorAll('.final-line').forEach((line,i)=>later(43000+i*1200,()=>line.classList.add('show')));
-    later(48100,()=>document.getElementById('finalSub').classList.add('show'));
-    later(49200,()=>document.getElementById('finalActions').classList.add('show'));
+    // Boot: ~6 seconds
+    document.querySelectorAll('.boot-line').forEach((line,i)=>later(500+i*850,()=>line.classList.add('show')));
+    later(5600,()=>scene('tracking'));
+
+    // Tracking: detections arrive deliberately, then remain visible long enough to read.
+    points.forEach((p,i)=>later(6700+i*2200,()=>{
+      addDetection(i);
+      if(window.matchMedia('(max-width:600px)').matches){
+        feed.scrollTo({top:0,behavior:'smooth'});
+      }
+    }));
+
+    // Last detection lands at ~26.5s. Hold the complete week for ~5 seconds.
+    later(31800,()=>scene('profile'));
+
+    // Profile assembly: each attribute appears slowly, then the completed profile holds.
+    attrs.forEach((a,i)=>later(33000+i*800,()=>{
+      a.classList.add('show');
+      document.getElementById('attrCount').textContent=String(i+1)
+    }));
+    later(43000,()=>scene('infer'));
+
+    // Pattern analysis: give each inference time to register.
+    inferenceRows.forEach((r,i)=>later(44200+i*1100,()=>r.classList.add('show')));
+    stories.forEach((st,i)=>later(48800+i*700,()=>st.classList.add('show')));
+
+    // Keep the fully populated inference scene on screen for several seconds.
+    later(56500,()=>{scene('alert');document.getElementById('alertFlash').classList.add('on')});
+
+    // Alert consequence: longer reading window.
+    later(65500,()=>scene('final'));
+
+    // Final thesis: slower line-by-line reveal, then actions.
+    document.querySelectorAll('.final-line').forEach((line,i)=>later(66600+i*1500,()=>line.classList.add('show')));
+    later(73000,()=>document.getElementById('finalSub').classList.add('show'));
+    later(74800,()=>document.getElementById('finalActions').classList.add('show'));
     const tick=setInterval(()=>{
       const elapsed=Date.now()-startedAt;
       progress.style.width=Math.min(100,(elapsed/TOTAL)*100)+'%';
