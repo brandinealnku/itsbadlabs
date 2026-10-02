@@ -25,6 +25,17 @@ h1,h2,h3,p{margin-top:0}h1{font:500 clamp(4rem,8vw,7.8rem)/.88 var(--serif);lett
 @media(max-width:900px){#intro,#observe,.pattern{grid-template-columns:1fr}.intro-panel,.network{border-left:0;border-right:0;border-top:1px solid var(--line)}.network{min-height:58vh}.pattern-left{border-right:0;border-bottom:1px solid var(--line)}.fact-grid{grid-template-columns:1fr}}
 @media(max-width:560px){.mast{grid-template-columns:auto 1fr;padding:0 14px}.product{display:none}.intro-copy,.intro-panel,.console{padding:30px 20px}.back{justify-self:end}h1{font-size:clamp(3.5rem,17vw,5.5rem)}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+.alarm-band{margin-top:18px;border:1px solid #5B2D50;border-left:7px solid var(--pink);background:#180F1A;padding:22px;display:grid;grid-template-columns:auto auto 1fr;gap:18px;align-items:center}
+.alarm-label{font:900 .66rem var(--mono);letter-spacing:.14em;color:var(--pink);text-transform:uppercase}
+.alarm-stat{font:500 clamp(3rem,6vw,6rem)/.8 var(--serif);color:#fff}
+.alarm-copy{color:#C9D3E1;line-height:1.5}.alarm-copy strong{color:#fff}
+.retention-callout{margin-top:18px;border:1px solid var(--line);background:#0B1728;padding:22px;display:grid;grid-template-columns:auto auto 1fr;gap:18px;align-items:center}
+.retention-callout span{font:900 .66rem var(--mono);letter-spacing:.14em;color:var(--blue)}
+.retention-callout strong{font:500 clamp(2.2rem,4vw,4rem)/1 var(--serif)}
+.retention-callout p{margin:0;color:#AEBBD0;line-height:1.55}
+@media(max-width:700px){.alarm-band,.retention-callout{grid-template-columns:1fr}.alarm-stat{margin:.2rem 0}}
+
 </style>
 </head>
 <body>
@@ -38,9 +49,9 @@ h1,h2,h3,p{margin-top:0}h1{font:500 clamp(4rem,8vw,7.8rem)/.88 var(--serif);lett
 <section id="intro" class="stage active">
   <div class="intro-copy">
     <p class="eyebrow">ALPR network experiment</p>
-    <h1>One camera sees a plate.</h1>
-    <p class="lead">What changes when the same vehicle is observed again, and again, across a network?</p>
-    <button class="cta" id="startBtn" type="button">Follow the car →</button>
+    <h1>Your car can become a timeline.</h1>
+    <p class="lead">One plate read is a record. Repeated reads can become a pattern of where a vehicle appears, when it appears, and which routines begin to emerge.</p>
+    <button class="cta" id="startBtn" type="button">See what four cameras can reveal →</button>
     <p class="lead" style="font-size:.9rem;margin-top:18px">This is a fictional simulation. No real plate, location, or person is being tracked.</p>
   </div>
   <aside class="intro-panel">
@@ -48,7 +59,7 @@ h1,h2,h3,p{margin-top:0}h1{font:500 clamp(4rem,8vw,7.8rem)/.88 var(--serif);lett
     <div class="signal-line"><b>DATA POINT 01</b> · plate image</div>
     <div class="signal-line"><b>DATA POINT 02</b> · date + time</div>
     <div class="signal-line"><b>DATA POINT 03</b> · camera location</div>
-    <div class="signal-line"><b>QUESTION</b> · when does a record become a pattern?</div>
+    <div class="signal-line"><b>QUESTION</b> · how much of a routine can a network reconstruct?</div>
   </aside>
 </section>
 
@@ -59,17 +70,17 @@ h1,h2,h3,p{margin-top:0}h1{font:500 clamp(4rem,8vw,7.8rem)/.88 var(--serif);lett
       <svg viewBox="0 0 1000 650" preserveAspectRatio="none" aria-hidden="true">
         <path d="M80 520 C210 490 220 360 360 360 S540 170 690 210 S820 450 930 120" fill="none" stroke="#263A55" stroke-width="4" stroke-dasharray="9 10"/>
       </svg>
-      <div class="camera-node" data-node="0" style="left:9%;top:80%"></div><div class="camera-label" style="left:9%;top:86%">CAM A</div>
-      <div class="camera-node" data-node="1" style="left:36%;top:56%"></div><div class="camera-label" style="left:36%;top:62%">CAM B</div>
-      <div class="camera-node" data-node="2" style="left:69%;top:32%"></div><div class="camera-label" style="left:69%;top:38%">CAM C</div>
-      <div class="camera-node" data-node="3" style="left:93%;top:18%"></div><div class="camera-label" style="left:93%;top:24%">CAM D</div>
+      <div class="camera-node" data-node="0" style="left:9%;top:80%"></div><div class="camera-label" style="left:9%;top:86%">HOME AREA</div>
+      <div class="camera-node" data-node="1" style="left:36%;top:56%"></div><div class="camera-label" style="left:36%;top:62%">WORK AREA</div>
+      <div class="camera-node" data-node="2" style="left:69%;top:32%"></div><div class="camera-label" style="left:69%;top:38%">CLINIC AREA</div>
+      <div class="camera-node" data-node="3" style="left:93%;top:18%"></div><div class="camera-label" style="left:93%;top:24%">HOME AREA</div>
       <div class="car" id="car" style="left:9%;top:80%">🚙</div>
     </div>
   </div>
   <aside class="console">
     <p class="eyebrow">Detection stream</p>
-    <h3>Plate 7LABS26 is appearing across the network.</h3>
-    <p style="color:#5B667A">Each event looks small by itself. Watch what happens as they accumulate.</p>
+    <h3>Plate 7LABS26 is leaving a trail.</h3>
+    <p style="color:#5B667A">Nothing here says who the driver is or why the vehicle was there. But repeated time-and-location records can still expose a routine.</p>
     <div class="event-list" id="eventList"><div class="empty">Waiting for first detection…</div></div>
     <div class="console-actions">
       <button class="cta" id="nextBtn" type="button">Next detection →</button>
@@ -80,7 +91,7 @@ h1,h2,h3,p{margin-top:0}h1{font:500 clamp(4rem,8vw,7.8rem)/.88 var(--serif);lett
 
 <section id="reveal" class="stage">
   <div class="reveal-wrap">
-    <div class="reveal-head"><span>NETWORK VIEW / FICTIONAL DEMO</span><span style="color:var(--pink)">4 detections · 2 days</span></div>
+    <div class="reveal-head"><span>NETWORK VIEW / FICTIONAL DEMO</span><span style="color:var(--pink)">4 detections · enough to suggest a routine</span></div>
     <div class="pattern">
       <div class="pattern-left">
         <div class="kicker">Individual records</div>
@@ -88,23 +99,29 @@ h1,h2,h3,p{margin-top:0}h1{font:500 clamp(4rem,8vw,7.8rem)/.88 var(--serif);lett
       </div>
       <div class="pattern-right">
         <div class="kicker">Network effect</div>
-        <h2 class="big-reveal">The camera saw <strong>a plate.</strong><br>The network saw <strong>a pattern.</strong></h2>
-        <p class="copy">A date, time, plate, vehicle image, and camera location can be ordinary records. Repeated observations can also reveal where a vehicle appeared and when. The privacy question is not only what one camera records—it is what connected records can reveal together.</p>
+        <h2 class="big-reveal">The camera saw <strong>a plate.</strong><br>The network reconstructed <strong>a routine.</strong></h2>
+        <p class="copy">Four fictional detections already suggest a home area, a work area, a daytime stop, and a return home. The records still do not explain why the vehicle was there—but connected observations can make ordinary movement surprisingly legible.</p>
       </div>
+    </div>
+
+    <div class="alarm-band">
+      <div class="alarm-label">WHAT CHANGED?</div>
+      <div class="alarm-stat">4</div>
+      <div class="alarm-copy"><strong>ordinary detections became a behavioral pattern.</strong><br>No single record told the story. The connection between records did.</div>
     </div>
 
     <div class="fact-grid">
       <div class="fact">
-        <h3>What Flock says</h3>
+        <h3>Safeguards Flock says it uses</h3>
         <p>Flock's current LPR policy says LPR data can include plate and vehicle images, plate number and state, vehicle characteristics, date, time, and camera location. It says customer queries are audit-logged and that LPR data is hard-deleted on a rolling 7-day basis by default, subject to customer law or policy. <a href="https://www.flocksafety.com/legal/lpr-policy" target="_blank" rel="noopener">Read the policy ↗</a></p>
       </div>
       <div class="fact">
-        <h3>What critics worry about</h3>
+        <h3>Why civil-liberties critics remain concerned</h3>
         <p>The ACLU argues that networked ALPR systems can create broad location-surveillance risks because repeated observations and data sharing can expose patterns of movement at scale. <a href="https://www.aclu.org/news/privacy-technology/tracking-alpr-cameras/despite-new-updates-flocks-creepy-cameras-remain-major-civil-liberties-threat" target="_blank" rel="noopener">Read the ACLU analysis ↗</a></p>
       </div>
     </div>
 
-    <div class="questions">
+    <div class="retention-callout"><span>DEFAULT RETENTION</span><strong>7 days</strong><p>Flock’s current LPR policy says data is hard-deleted on a rolling seven-day basis by default, while allowing different schedules when required by a customer’s law or policy.</p></div><div class="questions">
       <h3>Questions worth asking locally</h3>
       <ul>
         <li>How long is data retained?</li>
@@ -130,10 +147,10 @@ h1,h2,h3,p{margin-top:0}h1{font:500 clamp(4rem,8vw,7.8rem)/.88 var(--serif);lett
   const connectBtn=document.getElementById("connectBtn");
   const sightings=document.getElementById("sightings");
   const points=[
-    {left:"9%",top:"80%",cam:"CAM A",time:"Mon · 8:12 AM",place:"North corridor"},
-    {left:"36%",top:"56%",cam:"CAM B",time:"Mon · 5:41 PM",place:"Central corridor"},
-    {left:"69%",top:"32%",cam:"CAM C",time:"Tue · 7:58 AM",place:"East corridor"},
-    {left:"93%",top:"18%",cam:"CAM D",time:"Tue · 6:07 PM",place:"South corridor"}
+    {left:"9%",top:"80%",cam:"CAM A",time:"Mon · 7:41 AM",place:"Near home"},
+    {left:"36%",top:"56%",cam:"CAM B",time:"Mon · 8:18 AM",place:"Near work"},
+    {left:"69%",top:"32%",cam:"CAM C",time:"Tue · 12:06 PM",place:"Near a medical clinic"},
+    {left:"93%",top:"18%",cam:"CAM D",time:"Tue · 5:52 PM",place:"Near home"}
   ];
   let i=0;
   function show(id){stages.forEach(s=>s.classList.toggle("active",s.id===id));window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
