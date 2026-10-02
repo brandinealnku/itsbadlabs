@@ -528,6 +528,13 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
   .learn-continue{width:100%;min-height:44px;font-size:.78rem}
 }
 
+
+.choice-grid label{position:relative;touch-action:manipulation;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.choice-grid label.selected{border-color:var(--blue);background:#0D1A2B}
+.choice-grid label input{pointer-events:none}
+.choice-grid label span{pointer-events:none}
+.choice-grid label:active{transform:scale(.995)}
+
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -879,6 +886,7 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
     ['cp1Form','cp2Form','cp3Form'].forEach(id=>document.getElementById(id).reset());
     ['cp1Reveal','cp2Reveal','cp3Reveal'].forEach(id=>document.getElementById(id).hidden=true);
     document.querySelectorAll('.choice-grid').forEach(form=>form.hidden=false);
+    document.querySelectorAll('.choice-grid label').forEach(label=>{label.classList.remove('selected');label.setAttribute('aria-checked','false')});
     progress.style.width='0';
   }
   async function run(){
@@ -936,6 +944,44 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
     await sleep(1200);document.getElementById('finalActions').classList.add('show');setProgress(100);
   }
 
+
+
+  document.querySelectorAll('.choice-grid label').forEach(label=>{
+    const input=label.querySelector('input');
+    label.setAttribute('role', input.type==='radio' ? 'radio' : 'checkbox');
+    label.setAttribute('tabindex','0');
+    label.setAttribute('aria-checked','false');
+
+    function applySelection(){
+      if(input.type==='radio'){
+        document.querySelectorAll('input[name="'+input.name+'"]').forEach(peer=>{
+          peer.checked=false;
+          const peerLabel=peer.closest('label');
+          peerLabel.classList.remove('selected');
+          peerLabel.setAttribute('aria-checked','false');
+        });
+        input.checked=true;
+        label.classList.add('selected');
+        label.setAttribute('aria-checked','true');
+      }else{
+        input.checked=!input.checked;
+        label.classList.toggle('selected',input.checked);
+        label.setAttribute('aria-checked',String(input.checked));
+      }
+    }
+
+    label.addEventListener('click',(ev)=>{
+      ev.preventDefault();
+      applySelection();
+    });
+
+    label.addEventListener('keydown',(ev)=>{
+      if(ev.key===' ' || ev.key==='Enter'){
+        ev.preventDefault();
+        applySelection();
+      }
+    });
+  });
 
   document.getElementById('cp1Form').addEventListener('submit',(ev)=>{
     ev.preventDefault();
