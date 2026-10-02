@@ -479,6 +479,16 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
 .final-point{color:var(--blue)}
 .final-point strong{color:inherit}
 
+
+.final-actions{position:relative;z-index:20}
+.final-actions button,.final-actions a{pointer-events:auto}
+.evidence{scroll-margin-top:64px}
+@media(max-width:600px){
+  .final-actions{position:relative;z-index:30}
+  .evidence-btn{pointer-events:auto;touch-action:manipulation}
+  .evidence.open{display:block!important}
+}
+
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -650,7 +660,7 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
         <p class="final-sub" id="finalSub">Observation ≠ inference ≠ proof.</p>
         <div class="final-actions" id="finalActions">
           <button class="again" id="againBtn">Run it again</button>
-          <button class="evidence-btn" id="evidenceBtn">Explore the evidence</button>
+          <a class="evidence-btn" id="evidenceBtn" href="#evidence">Explore the evidence</a>
         </div>
       </div>
     </div>
@@ -801,8 +811,15 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
   }
   document.getElementById('startBtn').addEventListener('click',run);
   document.getElementById('againBtn').addEventListener('click',run);
-  document.getElementById('evidenceBtn').addEventListener('click',()=>{
-    const e=document.getElementById('evidence');e.classList.add('open');e.scrollIntoView({behavior:'smooth'});
+  document.getElementById('evidenceBtn').addEventListener('click',(ev)=>{
+    ev.preventDefault();
+    const e=document.getElementById('evidence');
+    e.classList.add('open');
+    requestAnimationFrame(()=>{
+      const top=e.getBoundingClientRect().top + window.scrollY - 56;
+      window.scrollTo({top,behavior:'smooth'});
+      history.replaceState(null,'','#evidence');
+    });
   });
   renderWeek(0);
 })();
