@@ -485,11 +485,13 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
 
 
 .final-actions{position:relative;z-index:20}
-.final-actions button,.final-actions a{pointer-events:auto}
+.scene:not(.active),.scene:not(.active) *{pointer-events:none!important}
+.scene.active{pointer-events:auto}
+.scene.active .final-actions button,.scene.active .final-actions a{pointer-events:auto}
 .evidence{scroll-margin-top:64px}
 @media(max-width:600px){
   .final-actions{position:relative;z-index:30}
-  .evidence-btn{pointer-events:auto;touch-action:manipulation}
+  .scene.active .evidence-btn{pointer-events:auto;touch-action:manipulation}
   .evidence.open{display:block!important}
 }
 
@@ -532,6 +534,10 @@ button,a{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var
 }
 
 
+
+
+.scene{visibility:hidden}
+.scene.active{visibility:visible}
 
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
