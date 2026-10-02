@@ -50,6 +50,14 @@ h1,h2,h3,p{margin-top:0}h1{font:500 clamp(4rem,8vw,7.8rem)/.88 var(--serif);lett
 @media(max-width:800px){.searchable-head,.wrong-grid{grid-template-columns:1fr}.vehicle-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.vehicle-grid{grid-template-columns:1fr}}
 
+
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:16px 0 4px}
+.day{border:1px solid #DCE1EA;background:#F7F8FC;padding:10px 5px;text-align:center;font:800 .62rem var(--mono);color:#6A7890}
+.day.hit{background:#07111F;color:#fff;border-color:#07111F}.day.hit b{color:#FF66C4}
+.story-grid{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0}.story-grid span{border:1px solid #42506A;padding:10px 12px;font:800 .72rem var(--mono);letter-spacing:.06em;color:#E8EDF5;background:#0B1728}
+#inference,#ambiguity,#alert{padding:clamp(28px,5vw,64px);align-content:center;background:#07111F}
+@media(max-width:700px){.week{grid-template-columns:repeat(4,1fr)}}
+
 </style>
 </head>
 <body>
@@ -92,49 +100,31 @@ h1,h2,h3,p{margin-top:0}h1{font:500 clamp(4rem,8vw,7.8rem)/.88 var(--serif);lett
     </div>
   </div>
   <aside class="console">
-    <p class="eyebrow">Detection stream</p>
-    <h3>Plate 7LABS26 is leaving a trail.</h3>
-    <p style="color:#5B667A">Nothing here says who the driver is or why the vehicle was there. But repeated time-and-location records can still expose a routine.</p>
+    <p class="eyebrow">Seven-day accumulation</p>
+    <h3>This vehicle is becoming a searchable pattern.</h3>
+    <p style="color:#5B667A">Watch a fictional week fill in. The individual records are ordinary. The pattern is not.</p>
+    <div class="week" id="week"></div>
     <div class="event-list" id="eventList"><div class="empty">Waiting for first detection…</div></div>
     <div class="console-actions">
-      <button class="cta" id="nextBtn" type="button">Next detection →</button>
+      <button class="cta" id="nextBtn" type="button">Add next detection →</button>
       <button class="secondary" id="connectBtn" type="button" disabled>Connect the dots</button>
     </div>
   </aside>
 </section>
 
-<section id="reveal" class="stage">
+<section id="inference" class="stage">
   <div class="reveal-wrap">
-    <div class="reveal-head"><span>NETWORK VIEW / FICTIONAL DEMO</span><span style="color:var(--pink)">4 detections · enough to suggest a routine</span></div>
-    <div class="pattern">
-      <div class="pattern-left">
-        <div class="kicker">Individual records</div>
-        <div class="sightings" id="sightings"></div>
-      </div>
-      <div class="pattern-right">
-        <div class="kicker">Network effect</div>
-        <h2 class="big-reveal">The camera saw <strong>a plate.</strong><br>The network reconstructed <strong>a routine.</strong></h2>
-        <p class="copy">Four fictional detections already suggest a home area, a work area, a daytime stop, and a return home. The records still do not explain why the vehicle was there—but connected observations can make ordinary movement surprisingly legible.</p>
-      </div>
-    </div>
-
-    <div class="alarm-band">
-      <div class="alarm-label">WHAT CHANGED?</div>
-      <div class="alarm-stat">4</div>
-      <div class="alarm-copy"><strong>ordinary detections became a behavioral pattern.</strong><br>No single record told the story. The connection between records did.</div>
-    </div>
-
-
-    <section class="searchable">
+    <div class="reveal-head"><span>SEARCHABLE VEHICLE / FICTIONAL DEMO</span><span style="color:var(--pink)">7 days of records</span></div>
+    <div class="searchable" style="margin-top:0">
       <div class="searchable-head">
         <div>
-          <div class="kicker">The plate is only part of the record</div>
-          <h2>A vehicle can become a searchable description.</h2>
+          <div class="kicker">What was recorded</div>
+          <h2>The vehicle became searchable by more than its plate.</h2>
         </div>
-        <p>Flock says its LPR systems capture license plates plus vehicle characteristics, and its current product materials describe searching by attributes such as make, model, color, body type, and visible features.</p>
+        <p>Make, model, color, body type, visible features, time, and camera location can turn a car into a searchable description.</p>
       </div>
       <div class="vehicle-card">
-        <div class="machine-label">SIMULATED VEHICLE RECORD</div>
+        <div class="machine-label">SIMULATED VEHICLE PROFILE</div>
         <div class="vehicle-grid">
           <div><span>Plate</span><strong>7LABS26</strong></div>
           <div><span>Make</span><strong>Toyota</strong></div>
@@ -145,18 +135,53 @@ h1,h2,h3,p{margin-top:0}h1{font:500 clamp(4rem,8vw,7.8rem)/.88 var(--serif);lett
         </div>
         <div class="query-box">
           <span>SEARCH QUERY</span>
-          <strong>black Toyota SUV + roof rack</strong>
-          <em>→ matching vehicle events can be surfaced even when the plate is partial, missing, or not the only search clue.</em>
+          <strong>black Toyota SUV + roof rack + seen near home area before 8 AM</strong>
+          <em>→ this is no longer just a plate lookup. It is a search for a vehicle pattern.</em>
         </div>
       </div>
-    </section>
+      <div class="console-actions" style="margin-top:24px">
+        <button class="cta" id="inferBtn" type="button">See what the pattern suggests →</button>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <section class="wrong-match">
+<section id="ambiguity" class="stage">
+  <div class="reveal-wrap">
+    <div class="reveal-head"><span>INFERENCE / NOT FACT</span><span style="color:var(--pink)">same data · multiple stories</span></div>
+    <div class="pattern">
+      <div class="pattern-left">
+        <div class="kicker">Pattern the system can suggest</div>
+        <div class="sightings" id="patternSummary"></div>
+      </div>
+      <div class="pattern-right">
+        <div class="kicker">What it still cannot know</div>
+        <h2 class="big-reveal">Same data.<br><strong>Five plausible stories.</strong></h2>
+        <div class="story-grid">
+          <span>Employee</span><span>Patient</span><span>Visitor</span><span>Caregiver</span><span>Delivery driver</span>
+        </div>
+        <p class="copy">The vehicle can appear near a clinic. That does not prove who was driving, why the vehicle was there, or what happened inside.</p>
+      </div>
+    </div>
+    <div class="alarm-band">
+      <div class="alarm-label">THE BLIND SPOT</div>
+      <div class="alarm-stat">≠</div>
+      <div class="alarm-copy"><strong>A convincing pattern is still not proof.</strong><br>The system can make movement legible without making the meaning true.</div>
+    </div>
+    <button class="cta restart" id="alertBtn" type="button">Now add an alert →</button>
+  </div>
+</section>
+
+<section id="alert" class="stage">
+  <div class="reveal-wrap">
+    <div class="reveal-head"><span>ALERT / CONSEQUENCE</span><span style="color:var(--pink)">what happens when the match is wrong?</span></div>
+    <div class="wrong-match" style="margin-top:0">
       <div class="wrong-label">DOCUMENTED CONSEQUENCE</div>
       <div class="wrong-grid">
         <div>
-          <h2>What happens when the data is wrong?</h2>
+          <h2>An alert is not proof.</h2>
           <p>In Plymouth, Minnesota, in June 2026, Flock cameras twice flagged a vehicle after a stolen-plate record had been entered incorrectly into a national database. The driver was confronted by multiple police vehicles and patted down before officers determined the underlying database entry was wrong.</p>
+          <p>The technology, the database, and the human response are different parts of the chain. A failure at any point can have consequences for a real person.</p>
         </div>
         <div class="wrong-card">
           <span>ALERT</span>
@@ -166,7 +191,44 @@ h1,h2,h3,p{margin-top:0}h1{font:500 clamp(4rem,8vw,7.8rem)/.88 var(--serif);lett
         </div>
       </div>
       <p class="source-note">Flock told CBS Minnesota that incidents like this are rare and that an alert should be one part of an investigation, not the whole basis for a stop. <a href="https://www.cbsnews.com/minnesota/news/flock-cameras-wrongly-flag-plates-as-stolen/" target="_blank" rel="noopener">Read the report ↗</a></p>
-    </section>
+    </div>
+    <div class="questions">
+      <h3>The sequence to remember</h3>
+      <ul>
+        <li>The camera records a vehicle.</li>
+        <li>The network accumulates time-and-location history.</li>
+        <li>The search surfaces a match or pattern.</li>
+        <li>A person decides what the alert means.</li>
+      </ul>
+    </div>
+    <button class="cta restart" id="finalBtn" type="button">See the final reveal →</button>
+  </div>
+</section>
+
+<section id="reveal" class="stage">
+  <div class="reveal-wrap">
+    <div class="reveal-head"><span>NETWORK VIEW / FICTIONAL DEMO</span><span style="color:var(--pink)">4 detections · enough to suggest a routine</span></div>
+    <div class="pattern">
+      <div class="pattern-left">
+        <div class="kicker">What changed</div>
+        <div class="sightings">
+          <div class="sighting"><span style="color:#5FD4FF">01</span><span>Vehicle description</span><span>SEARCHABLE</span></div>
+          <div class="sighting"><span style="color:#5FD4FF">02</span><span>Repeated detections</span><span>ACCUMULATED</span></div>
+          <div class="sighting"><span style="color:#5FD4FF">03</span><span>Movement pattern</span><span>INFERRED</span></div>
+          <div class="sighting"><span style="color:#5FD4FF">04</span><span>Alert</span><span>ACTIONABLE</span></div>
+        </div>
+      </div>
+      <div class="pattern-right">
+        <div class="kicker">The point</div>
+        <h2 class="big-reveal">The camera saw <strong>a vehicle.</strong><br>The network found <strong>a routine.</strong><br>The search found <strong>a match.</strong></h2>
+        <p class="copy">None of that proves the story is true.</p>
+      </div>
+    </div>
+    <div class="alarm-band">
+      <div class="alarm-label">THE RISK</div>
+      <div class="alarm-stat">!</div>
+      <div class="alarm-copy"><strong>Enough data can create a very convincing story about someone—and still be wrong.</strong><br>That is the difference between observation, inference, and proof.</div>
+    </div>
 
     <div class="fact-grid">
       <div class="fact">
@@ -203,34 +265,58 @@ h1,h2,h3,p{margin-top:0}h1{font:500 clamp(4rem,8vw,7.8rem)/.88 var(--serif);lett
   const eventList=document.getElementById("eventList");
   const nextBtn=document.getElementById("nextBtn");
   const connectBtn=document.getElementById("connectBtn");
-  const sightings=document.getElementById("sightings");
+  const week=document.getElementById("week");
+  const patternSummary=document.getElementById("patternSummary");
   const points=[
-    {left:"9%",top:"80%",cam:"CAM A",time:"Mon · 7:41 AM",place:"Near home"},
-    {left:"36%",top:"56%",cam:"CAM B",time:"Mon · 8:18 AM",place:"Near work"},
-    {left:"69%",top:"32%",cam:"CAM C",time:"Tue · 12:06 PM",place:"Near a medical clinic"},
-    {left:"93%",top:"18%",cam:"CAM D",time:"Tue · 5:52 PM",place:"Near home"}
+    {left:"9%",top:"80%",cam:"CAM A",day:"Mon",time:"7:41 AM",place:"Near home"},
+    {left:"36%",top:"56%",cam:"CAM B",day:"Mon",time:"8:18 AM",place:"Near work"},
+    {left:"69%",top:"32%",cam:"CAM C",day:"Tue",time:"12:06 PM",place:"Near a medical clinic"},
+    {left:"93%",top:"18%",cam:"CAM D",day:"Tue",time:"5:52 PM",place:"Near home"},
+    {left:"36%",top:"56%",cam:"CAM B",day:"Wed",time:"8:09 AM",place:"Near work"},
+    {left:"9%",top:"80%",cam:"CAM A",day:"Thu",time:"7:44 AM",place:"Near home"},
+    {left:"36%",top:"56%",cam:"CAM B",day:"Thu",time:"8:21 AM",place:"Near work"},
+    {left:"93%",top:"18%",cam:"CAM D",day:"Fri",time:"5:49 PM",place:"Near home"},
+    {left:"69%",top:"32%",cam:"CAM C",day:"Sat",time:"10:14 AM",place:"Near a medical clinic"},
+    {left:"9%",top:"80%",cam:"CAM A",day:"Sun",time:"6:31 PM",place:"Near home"}
   ];
+  const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
   let i=0;
   function show(id){stages.forEach(s=>s.classList.toggle("active",s.id===id));window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
+  function renderWeek(){
+    week.innerHTML=days.map(d=>{
+      const count=points.slice(0,i).filter(p=>p.day===d).length;
+      return '<div class="day'+(count?' hit':'')+'">'+d+(count?'<br><b>'+count+' hit'+(count>1?'s':'')+'</b>':'')+'</div>';
+    }).join("");
+  }
   function render(){
+    renderWeek();
     if(i===0){eventList.innerHTML='<div class="empty">Waiting for first detection…</div>';return}
-    eventList.innerHTML=points.slice(0,i).map((p,n)=>'<div class="event"><span class="n">'+String(n+1).padStart(2,"0")+'</span><span>'+p.cam+' · '+p.place+'</span><span class="time">'+p.time+'</span></div>').join("");
+    eventList.innerHTML=points.slice(0,i).slice(-5).map((p,n)=>'<div class="event"><span class="n">'+String(Math.max(1,i-4)+n).padStart(2,"0")+'</span><span>'+p.place+'</span><span class="time">'+p.day+' · '+p.time+'</span></div>').join("");
   }
   function next(){
     if(i>=points.length)return;
-    const p=points[i];
-    car.style.left=p.left;car.style.top=p.top;nodes[i].classList.add("hit");i++;render();
-    if(i===points.length){nextBtn.disabled=true;nextBtn.textContent="All detections recorded";connectBtn.disabled=false}
+    const p=points[i];car.style.left=p.left;car.style.top=p.top;nodes[i%nodes.length].classList.add("hit");i++;render();
+    if(i===points.length){nextBtn.disabled=true;nextBtn.textContent="Seven-day pattern complete";connectBtn.disabled=false}
   }
-  function reveal(){
-    sightings.innerHTML=points.map((p,n)=>'<div class="sighting"><span style="color:#5FD4FF">'+String(n+1).padStart(2,"0")+'</span><span>'+p.cam+' · '+p.place+'</span><span>'+p.time+'</span></div>').join("");
-    show("reveal");
+  function reset(){
+    i=0;nodes.forEach(n=>n.classList.remove("hit"));car.style.left=points[0].left;car.style.top=points[0].top;
+    nextBtn.disabled=false;nextBtn.textContent="Add next detection →";connectBtn.disabled=true;render();show("intro");
   }
-  function reset(){i=0;nodes.forEach(n=>n.classList.remove("hit"));car.style.left=points[0].left;car.style.top=points[0].top;nextBtn.disabled=false;nextBtn.textContent="Next detection →";connectBtn.disabled=true;render();show("intro")}
-  document.getElementById("startBtn").addEventListener("click",()=>{show("observe");setTimeout(next,500)});
+  document.getElementById("startBtn").addEventListener("click",()=>{show("observe");setTimeout(next,400)});
   nextBtn.addEventListener("click",next);
-  connectBtn.addEventListener("click",reveal);
+  connectBtn.addEventListener("click",()=>show("inference"));
+  document.getElementById("inferBtn").addEventListener("click",()=>{
+    patternSummary.innerHTML=[
+      ["Probable home area","morning + evening recurrence"],
+      ["Probable work area","weekday morning recurrence"],
+      ["Recurring clinic-area stop","midday + weekend presence"]
+    ].map((x,n)=>'<div class="sighting"><span style="color:#5FD4FF">'+String(n+1).padStart(2,"0")+'</span><span>'+x[0]+'</span><span>'+x[1]+'</span></div>').join("");
+    show("ambiguity");
+  });
+  document.getElementById("alertBtn").addEventListener("click",()=>show("alert"));
+  document.getElementById("finalBtn").addEventListener("click",()=>show("reveal"));
   document.getElementById("restartBtn").addEventListener("click",reset);
+  render();
 })();
 </script>
 </body>
