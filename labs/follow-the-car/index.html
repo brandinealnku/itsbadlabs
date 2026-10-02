@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111F">
+<title>Follow the Car — ITSBAD Labs</title>
+<meta name="description" content="A short interactive ALPR literacy experiment from ITSBAD Labs about how repeated vehicle detections can become a movement pattern.">
+<link rel="canonical" href="https://itsbadlabs.com/labs/follow-the-car/">
+<meta property="og:title" content="Follow the Car | ITSBAD Labs">
+<meta property="og:description" content="One camera sees a plate. A network can reveal a pattern.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://itsbadlabs.com/labs/follow-the-car/">
+<link rel="icon" type="image/svg+xml" href="../../assets/brand/favicon.svg">
+<style>
+:root{--ink:#07111F;--ink2:#0B1728;--paper:#F7F8FC;--white:#fff;--pink:#FF66C4;--blue:#5FD4FF;--violet:#8A7DFF;--muted:#6A7890;--line:#33445E;--soft:#AEBBD0;--mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;--sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--serif:Georgia,"Times New Roman",serif}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--ink);color:#fff;font-family:var(--sans)}button,a{font:inherit}button{cursor:pointer}.app{min-height:100vh}
+.mast{min-height:70px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;padding:0 22px;background:var(--ink);border-bottom:6px solid var(--pink)}.logo{width:90px}.product{font:900 .68rem var(--mono);letter-spacing:.16em;text-transform:uppercase}.back{color:#fff;text-decoration:none;border:1px solid #56657D;padding:.7rem .9rem;font:800 .64rem var(--mono);letter-spacing:.08em;text-transform:uppercase}.back:hover{color:var(--pink);border-color:var(--pink)}
+.stage{display:none;min-height:calc(100vh - 76px)}.stage.active{display:grid}.eyebrow{font:900 .7rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--pink);margin:0 0 18px}.lead{font-size:clamp(1rem,1.8vw,1.2rem);line-height:1.55;color:#B8C4D8;max-width:720px}
+h1,h2,h3,p{margin-top:0}h1{font:500 clamp(4rem,8vw,7.8rem)/.88 var(--serif);letter-spacing:-.065em;margin:0 0 24px;max-width:9ch}h2{font:500 clamp(2.8rem,6vw,5.8rem)/.92 var(--serif);letter-spacing:-.055em;margin:0 0 18px}.cta,.secondary{min-height:54px;padding:0 22px;border-radius:0;font-weight:900}.cta{border:0;background:#fff;color:var(--ink);border-bottom:6px solid var(--pink)}.secondary{border:1px solid #56657D;background:transparent;color:#fff}.secondary:hover{border-color:var(--blue);color:var(--blue)}
+#intro{grid-template-columns:minmax(0,1.15fr) minmax(330px,.85fr)}.intro-copy{padding:clamp(44px,7vw,90px);display:flex;flex-direction:column;justify-content:center}.intro-panel{position:relative;overflow:hidden;border-left:1px solid var(--line);padding:32px;display:grid;align-content:center;background:var(--ink2)}.intro-panel:before{content:"";position:absolute;inset:0;background:linear-gradient(rgba(95,212,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(95,212,255,.07) 1px,transparent 1px);background-size:38px 38px}.intro-panel>*{position:relative;z-index:1}.plate{border:2px solid #E7ECF5;background:#F7F8FC;color:var(--ink);padding:18px 24px;font:900 clamp(2rem,4vw,4rem) var(--mono);letter-spacing:.14em;text-align:center;box-shadow:0 0 0 6px #3A3B78;margin-bottom:28px}.signal-line{font:700 .75rem/1.6 var(--mono);color:#AEBBD0;border-top:1px solid var(--line);padding:12px 0}.signal-line b{color:var(--blue)}
+#observe{grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr)}.network{position:relative;overflow:hidden;min-height:calc(100vh - 76px);background:#050A12;border-right:1px solid var(--line)}.grid{position:absolute;inset:0;background:linear-gradient(rgba(95,212,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(95,212,255,.06) 1px,transparent 1px);background-size:52px 52px}.route{position:absolute;inset:7% 7% 9%}.route svg{width:100%;height:100%}.camera-node{position:absolute;width:18px;height:18px;border-radius:50%;background:#18263B;border:2px solid #5D708D;transform:translate(-50%,-50%);transition:.35s}.camera-node.hit{background:var(--blue);border-color:#fff;box-shadow:0 0 0 8px rgba(95,212,255,.12),0 0 24px rgba(95,212,255,.5)}.camera-label{position:absolute;transform:translate(-50%,-50%);font:800 .65rem var(--mono);letter-spacing:.08em;color:#8192AD}.car{position:absolute;transform:translate(-50%,-50%);font-size:1.7rem;transition:1s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 14px rgba(255,102,196,.55))}
+.console{background:#fff;color:var(--ink);padding:30px;display:flex;flex-direction:column}.console .eyebrow{color:#C43C98}.event-list{border-top:2px solid var(--ink);margin-top:14px}.event{display:grid;grid-template-columns:34px 1fr auto;gap:10px;padding:13px 0;border-bottom:1px solid #DCE1EA;font:.8rem var(--mono)}.event .n{color:#C43C98;font-weight:900}.event .time{color:#66758B}.empty{padding:18px 0;color:#6A7890;font:.8rem/1.5 var(--mono)}.console-actions{margin-top:auto;padding-top:24px;display:grid;gap:12px}.console-actions button{width:100%}
+#reveal{padding:clamp(28px,5vw,64px);align-content:center}.reveal-wrap{width:min(100%,1180px);margin:auto}.reveal-head{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:18px;font:800 .65rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#AEBBD0}.pattern{border:1px solid var(--line);display:grid;grid-template-columns:.82fr 1.18fr}.pattern-left,.pattern-right{padding:clamp(24px,4vw,44px)}.pattern-left{border-right:1px solid var(--line)}.pattern-right{background:var(--ink2)}.kicker{font:900 .68rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--pink);margin-bottom:20px}.pattern-left .kicker{color:var(--blue)}.sightings{border-top:1px solid var(--line)}.sighting{display:grid;grid-template-columns:36px 1fr auto;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);font:.82rem var(--mono)}.big-reveal{font:500 clamp(3rem,6.2vw,6.6rem)/.9 var(--serif);letter-spacing:-.06em;margin:0}.big-reveal strong{color:var(--blue);font-weight:500}.copy{color:#AEBBD0;max-width:56ch;line-height:1.6;margin-top:24px}.fact-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:28px}.fact{background:var(--ink);padding:22px}.fact h3{font-size:1rem;margin:0 0 9px}.fact p{color:#AEBBD0;margin:0;line-height:1.55}.fact a{color:var(--blue)}.questions{margin-top:28px;border-left:6px solid var(--pink);padding:22px 24px;background:var(--ink2)}.questions h3{margin:0 0 12px}.questions ul{margin:0;padding-left:20px;color:#C3CDDB}.restart{margin-top:26px}
+@media(max-width:900px){#intro,#observe,.pattern{grid-template-columns:1fr}.intro-panel,.network{border-left:0;border-right:0;border-top:1px solid var(--line)}.network{min-height:58vh}.pattern-left{border-right:0;border-bottom:1px solid var(--line)}.fact-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.mast{grid-template-columns:auto 1fr;padding:0 14px}.product{display:none}.intro-copy,.intro-panel,.console{padding:30px 20px}.back{justify-self:end}h1{font-size:clamp(3.5rem,17vw,5.5rem)}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="mast">
+<img class="logo" src="../../assets/brand/itsbad-labs-logo.svg" alt="ITSBAD Labs">
+<div class="product">LABS / FOLLOW THE CAR</div>
+<a class="back" href="../">Back to Labs</a>
+</header>
+<main>
+<section id="intro" class="stage active">
+  <div class="intro-copy">
+    <p class="eyebrow">ALPR network experiment</p>
+    <h1>One camera sees a plate.</h1>
+    <p class="lead">What changes when the same vehicle is observed again, and again, across a network?</p>
+    <button class="cta" id="startBtn" type="button">Follow the car →</button>
+    <p class="lead" style="font-size:.9rem;margin-top:18px">This is a fictional simulation. No real plate, location, or person is being tracked.</p>
+  </div>
+  <aside class="intro-panel">
+    <div class="plate">7LABS26</div>
+    <div class="signal-line"><b>DATA POINT 01</b> · plate image</div>
+    <div class="signal-line"><b>DATA POINT 02</b> · date + time</div>
+    <div class="signal-line"><b>DATA POINT 03</b> · camera location</div>
+    <div class="signal-line"><b>QUESTION</b> · when does a record become a pattern?</div>
+  </aside>
+</section>
+
+<section id="observe" class="stage">
+  <div class="network">
+    <div class="grid"></div>
+    <div class="route">
+      <svg viewBox="0 0 1000 650" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M80 520 C210 490 220 360 360 360 S540 170 690 210 S820 450 930 120" fill="none" stroke="#263A55" stroke-width="4" stroke-dasharray="9 10"/>
+      </svg>
+      <div class="camera-node" data-node="0" style="left:9%;top:80%"></div><div class="camera-label" style="left:9%;top:86%">CAM A</div>
+      <div class="camera-node" data-node="1" style="left:36%;top:56%"></div><div class="camera-label" style="left:36%;top:62%">CAM B</div>
+      <div class="camera-node" data-node="2" style="left:69%;top:32%"></div><div class="camera-label" style="left:69%;top:38%">CAM C</div>
+      <div class="camera-node" data-node="3" style="left:93%;top:18%"></div><div class="camera-label" style="left:93%;top:24%">CAM D</div>
+      <div class="car" id="car" style="left:9%;top:80%">🚙</div>
+    </div>
+  </div>
+  <aside class="console">
+    <p class="eyebrow">Detection stream</p>
+    <h3>Plate 7LABS26 is appearing across the network.</h3>
+    <p style="color:#5B667A">Each event looks small by itself. Watch what happens as they accumulate.</p>
+    <div class="event-list" id="eventList"><div class="empty">Waiting for first detection…</div></div>
+    <div class="console-actions">
+      <button class="cta" id="nextBtn" type="button">Next detection →</button>
+      <button class="secondary" id="connectBtn" type="button" disabled>Connect the dots</button>
+    </div>
+  </aside>
+</section>
+
+<section id="reveal" class="stage">
+  <div class="reveal-wrap">
+    <div class="reveal-head"><span>NETWORK VIEW / FICTIONAL DEMO</span><span style="color:var(--pink)">4 detections · 2 days</span></div>
+    <div class="pattern">
+      <div class="pattern-left">
+        <div class="kicker">Individual records</div>
+        <div class="sightings" id="sightings"></div>
+      </div>
+      <div class="pattern-right">
+        <div class="kicker">Network effect</div>
+        <h2 class="big-reveal">The camera saw <strong>a plate.</strong><br>The network saw <strong>a pattern.</strong></h2>
+        <p class="copy">A date, time, plate, vehicle image, and camera location can be ordinary records. Repeated observations can also reveal where a vehicle appeared and when. The privacy question is not only what one camera records—it is what connected records can reveal together.</p>
+      </div>
+    </div>
+
+    <div class="fact-grid">
+      <div class="fact">
+        <h3>What Flock says</h3>
+        <p>Flock's current LPR policy says LPR data can include plate and vehicle images, plate number and state, vehicle characteristics, date, time, and camera location. It says customer queries are audit-logged and that LPR data is hard-deleted on a rolling 7-day basis by default, subject to customer law or policy. <a href="https://www.flocksafety.com/legal/lpr-policy" target="_blank" rel="noopener">Read the policy ↗</a></p>
+      </div>
+      <div class="fact">
+        <h3>What critics worry about</h3>
+        <p>The ACLU argues that networked ALPR systems can create broad location-surveillance risks because repeated observations and data sharing can expose patterns of movement at scale. <a href="https://www.aclu.org/news/privacy-technology/tracking-alpr-cameras/despite-new-updates-flocks-creepy-cameras-remain-major-civil-liberties-threat" target="_blank" rel="noopener">Read the ACLU analysis ↗</a></p>
+      </div>
+    </div>
+
+    <div class="questions">
+      <h3>Questions worth asking locally</h3>
+      <ul>
+        <li>How long is data retained?</li>
+        <li>Who can search it, and are searches audited?</li>
+        <li>Which agencies or networks can receive shared data?</li>
+        <li>What happens after a low-confidence or incorrect read?</li>
+        <li>What public policy governs use, access, and oversight?</li>
+      </ul>
+    </div>
+
+    <button class="secondary restart" id="restartBtn" type="button">Run the simulation again</button>
+  </div>
+</section>
+</main>
+</div>
+<script>
+(() => {
+  const stages=[...document.querySelectorAll(".stage")];
+  const nodes=[...document.querySelectorAll(".camera-node")];
+  const car=document.getElementById("car");
+  const eventList=document.getElementById("eventList");
+  const nextBtn=document.getElementById("nextBtn");
+  const connectBtn=document.getElementById("connectBtn");
+  const sightings=document.getElementById("sightings");
+  const points=[
+    {left:"9%",top:"80%",cam:"CAM A",time:"Mon · 8:12 AM",place:"North corridor"},
+    {left:"36%",top:"56%",cam:"CAM B",time:"Mon · 5:41 PM",place:"Central corridor"},
+    {left:"69%",top:"32%",cam:"CAM C",time:"Tue · 7:58 AM",place:"East corridor"},
+    {left:"93%",top:"18%",cam:"CAM D",time:"Tue · 6:07 PM",place:"South corridor"}
+  ];
+  let i=0;
+  function show(id){stages.forEach(s=>s.classList.toggle("active",s.id===id));window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
+  function render(){
+    if(i===0){eventList.innerHTML='<div class="empty">Waiting for first detection…</div>';return}
+    eventList.innerHTML=points.slice(0,i).map((p,n)=>'<div class="event"><span class="n">'+String(n+1).padStart(2,"0")+'</span><span>'+p.cam+' · '+p.place+'</span><span class="time">'+p.time+'</span></div>').join("");
+  }
+  function next(){
+    if(i>=points.length)return;
+    const p=points[i];
+    car.style.left=p.left;car.style.top=p.top;nodes[i].classList.add("hit");i++;render();
+    if(i===points.length){nextBtn.disabled=true;nextBtn.textContent="All detections recorded";connectBtn.disabled=false}
+  }
+  function reveal(){
+    sightings.innerHTML=points.map((p,n)=>'<div class="sighting"><span style="color:#5FD4FF">'+String(n+1).padStart(2,"0")+'</span><span>'+p.cam+' · '+p.place+'</span><span>'+p.time+'</span></div>').join("");
+    show("reveal");
+  }
+  function reset(){i=0;nodes.forEach(n=>n.classList.remove("hit"));car.style.left=points[0].left;car.style.top=points[0].top;nextBtn.disabled=false;nextBtn.textContent="Next detection →";connectBtn.disabled=true;render();show("intro")}
+  document.getElementById("startBtn").addEventListener("click",()=>{show("observe");setTimeout(next,500)});
+  nextBtn.addEventListener("click",next);
+  connectBtn.addEventListener("click",reveal);
+  document.getElementById("restartBtn").addEventListener("click",reset);
+})();
+</script>
+</body>
+</html>
