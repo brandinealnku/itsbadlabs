@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="itsbad-build" content="follow-the-car-20261002-short-learning">
+<meta name="itsbad-build" content="follow-the-car-20261002-pathmotion">
 <title>Follow the Car — ITSBAD Labs</title>
 <meta name="description" content="A short interactive ALPR literacy experience about the difference between observation, inference, and proof.">
 <link rel="canonical" href="https://itsbadlabs.com/labs/follow-the-car/">
@@ -62,7 +62,7 @@ h1{font:500 clamp(4rem,8vw,7.5rem)/.88 var(--serif);letter-spacing:-.06em;margin
 .node{position:absolute;width:18px;height:18px;border-radius:50%;background:#17273A;border:2px solid #5B6C85;transform:translate(-50%,-50%);transition:.3s}
 .node.hit{background:var(--blue);border-color:#fff;box-shadow:0 0 0 8px rgba(95,212,255,.11),0 0 22px rgba(95,212,255,.45)}
 .node-label{position:absolute;transform:translate(-50%,-50%);padding:3px 5px;border:1px solid rgba(95,212,255,.14);background:rgba(5,10,18,.8);font:800 .55rem var(--mono);color:#899AB2;white-space:nowrap}
-.car{position:absolute;transform:translate(-50%,-50%);width:18px;height:29px;border-radius:7px 7px 5px 5px;background:linear-gradient(180deg,#FF66C4 0 23%,#D8E5F2 24% 42%,#FF66C4 43% 100%);border:1px solid #fff;box-shadow:0 0 14px rgba(255,102,196,.5);transition:.9s cubic-bezier(.2,.8,.2,1)}
+.car{position:absolute;left:0;top:0;transform:translate(-50%,-50%) rotate(0deg);transform-origin:center center;width:18px;height:29px;border-radius:7px 7px 5px 5px;background:linear-gradient(180deg,#FF66C4 0 23%,#D8E5F2 24% 42%,#FF66C4 43% 100%);border:1px solid #fff;box-shadow:0 0 14px rgba(255,102,196,.5);will-change:left,top,transform}
 .hud{position:absolute;left:16px;top:14px;font:900 .63rem var(--mono);letter-spacing:.1em;color:var(--blue)}
 .console{background:#F7F8FC;color:#07111F;padding:26px;display:flex;flex-direction:column;justify-content:center}
 .console-kicker{font:900 .64rem var(--mono);letter-spacing:.14em;color:#C63A99;text-transform:uppercase;margin-bottom:8px}
@@ -179,13 +179,13 @@ h1{font:500 clamp(4rem,8vw,7.5rem)/.88 var(--serif);letter-spacing:-.06em;margin
         <div class="hud" id="hud">● 0 DETECTIONS</div>
         <div class="route">
           <svg viewBox="0 0 1000 650" preserveAspectRatio="none" aria-hidden="true">
-            <path class="route-path" d="M80 520 C210 490 220 360 360 360 S540 170 690 210 S820 450 930 120"/>
+            <path id="routePath" class="route-path" d="M80 520 C210 490 220 360 360 360 S540 170 690 210 S820 450 930 120"/>
           </svg>
           <div class="node" data-node="0" style="left:9%;top:80%"></div><div class="node-label" style="left:9%;top:87%">HOME AREA</div>
           <div class="node" data-node="1" style="left:36%;top:56%"></div><div class="node-label" style="left:36%;top:64%">WORK AREA</div>
           <div class="node" data-node="2" style="left:69%;top:32%"></div><div class="node-label" style="left:69%;top:40%">CLINIC AREA</div>
           <div class="node" data-node="3" style="left:93%;top:18%"></div><div class="node-label" style="left:93%;top:26%">HOME AREA</div>
-          <div class="car" id="car" style="left:9%;top:80%"></div>
+          <div class="car" id="car"></div>
         </div>
       </div>
       <aside class="console">
@@ -300,40 +300,93 @@ h1{font:500 clamp(4rem,8vw,7.5rem)/.88 var(--serif);letter-spacing:-.06em;margin
   const scenes=[...document.querySelectorAll('.scene')];
   const nodes=[...document.querySelectorAll('.node')];
   const car=document.getElementById('car');
+  const route=document.querySelector('.route');
+  const routePath=document.getElementById('routePath');
   const feed=document.getElementById('feed');
   const hud=document.getElementById('hud');
   const progress=document.getElementById('progress');
   const choices=[...document.querySelectorAll('.choice')];
   let selected=null;
   let timers=[];
+  let rafId=null;
+  let currentPathT=0;
 
   const points=[
-    {left:'9%',top:'80%',place:'Near home',time:'Mon · 7:41 AM',node:0},
-    {left:'36%',top:'56%',place:'Near work',time:'Mon · 8:18 AM',node:1},
-    {left:'69%',top:'32%',place:'Near a medical clinic',time:'Tue · 12:06 PM',node:2},
-    {left:'93%',top:'18%',place:'Near home',time:'Tue · 5:52 PM',node:3},
-    {left:'69%',top:'32%',place:'Near a medical clinic',time:'Wed · 12:11 PM',node:2}
+    {t:0.00,place:'Near home',time:'Mon · 7:41 AM',node:0},
+    {t:0.31,place:'Near work',time:'Mon · 8:18 AM',node:1},
+    {t:0.64,place:'Near a medical clinic',time:'Tue · 12:06 PM',node:2},
+    {t:1.00,place:'Near home',time:'Tue · 5:52 PM',node:3},
+    {t:0.64,place:'Near a medical clinic',time:'Wed · 12:11 PM',node:2}
   ];
 
   function later(ms,fn){const id=setTimeout(fn,ms);timers.push(id)}
-  function clearTimers(){timers.forEach(clearTimeout);timers=[]}
+  function clearTimers(){timers.forEach(clearTimeout);timers=[];if(rafId){cancelAnimationFrame(rafId);rafId=null}}
   function show(id){scenes.forEach(s=>s.classList.toggle('active',s.id===id))}
   function setProgress(n){progress.style.width=n+'%'}
-  function reset(){
-    clearTimers();selected=null;
-    choices.forEach(b=>b.classList.remove('selected'));
-    nodes.forEach(n=>n.classList.remove('hit'));
-    car.style.left=points[0].left;car.style.top=points[0].top;
-    feed.innerHTML='';hud.textContent='● 0 DETECTIONS';
-    document.querySelectorAll('.final-line').forEach(x=>x.classList.remove('show'));
-    document.getElementById('finalSub').classList.remove('show');
-    document.getElementById('finalActions').classList.remove('show');
-    document.getElementById('evidence').classList.remove('open');
-    setProgress(0);
+
+  function pathPoint(t){
+    const length=routePath.getTotalLength();
+    const p=routePath.getPointAtLength(Math.max(0,Math.min(1,t))*length);
+    const rect=route.getBoundingClientRect();
+    return {
+      x:(p.x/1000)*rect.width,
+      y:(p.y/650)*rect.height
+    };
   }
+
+  function pathAngle(t,direction){
+    const length=routePath.getTotalLength();
+    const here=Math.max(0,Math.min(1,t))*length;
+    const delta=Math.max(2,length*0.004);
+    const a=routePath.getPointAtLength(Math.max(0,here-delta));
+    const b=routePath.getPointAtLength(Math.min(length,here+delta));
+    let dx=b.x-a.x;
+    let dy=b.y-a.y;
+    if(direction<0){dx=-dx;dy=-dy}
+    return Math.atan2(dy,dx)*180/Math.PI+90;
+  }
+
+  function placeCar(t,direction=1){
+    const p=pathPoint(t);
+    const angle=pathAngle(t,direction);
+    car.style.left=p.x+'px';
+    car.style.top=p.y+'px';
+    car.style.transform='translate(-50%,-50%) rotate('+angle+'deg)';
+  }
+
+  function easeInOutCubic(x){
+    return x<.5 ? 4*x*x*x : 1-Math.pow(-2*x+2,3)/2;
+  }
+
+  function moveCarTo(targetT,duration=1250){
+    return new Promise(resolve=>{
+      if(rafId)cancelAnimationFrame(rafId);
+      const startT=currentPathT;
+      const direction=targetT>=startT?1:-1;
+      const started=performance.now();
+
+      function frame(now){
+        const raw=Math.min(1,(now-started)/duration);
+        const eased=easeInOutCubic(raw);
+        const t=startT+(targetT-startT)*eased;
+        placeCar(t,direction);
+
+        if(raw<1){
+          rafId=requestAnimationFrame(frame);
+        }else{
+          currentPathT=targetT;
+          placeCar(currentPathT,direction);
+          rafId=null;
+          resolve();
+        }
+      }
+
+      rafId=requestAnimationFrame(frame);
+    });
+  }
+
   function addDetection(i){
     const p=points[i];
-    car.style.left=p.left;car.style.top=p.top;
     nodes[p.node].classList.add('hit');
     hud.textContent='● '+(i+1)+' DETECTION'+(i?'S':'');
     const row=document.createElement('div');
@@ -341,10 +394,43 @@ h1{font:500 clamp(4rem,8vw,7.5rem)/.88 var(--serif);letter-spacing:-.06em;margin
     row.innerHTML='<span class="n">'+String(i+1).padStart(2,'0')+'</span><span>'+p.place+'</span><span class="time">'+p.time+'</span>';
     feed.prepend(row);
   }
+
+  function reset(){
+    clearTimers();selected=null;currentPathT=0;
+    choices.forEach(b=>b.classList.remove('selected'));
+    nodes.forEach(n=>n.classList.remove('hit'));
+    feed.innerHTML='';hud.textContent='● 0 DETECTIONS';
+    document.querySelectorAll('.final-line').forEach(x=>x.classList.remove('show'));
+    document.getElementById('finalSub').classList.remove('show');
+    document.getElementById('finalActions').classList.remove('show');
+    document.getElementById('evidence').classList.remove('open');
+    setProgress(0);
+    requestAnimationFrame(()=>placeCar(0,1));
+  }
+
   async function run(){
-    reset();intro.style.display='none';runtime.classList.add('active');show('tracking');setProgress(8);
-    points.forEach((p,i)=>later(650+i*1450,()=>addDetection(i)));
-    later(8600,()=>{show('question');setProgress(40)});
+    reset();
+    intro.style.display='none';
+    runtime.classList.add('active');
+    show('tracking');
+    setProgress(8);
+
+    // Let layout settle before reading the responsive SVG dimensions.
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+    placeCar(0,1);
+    addDetection(0);
+
+    for(let i=1;i<points.length;i++){
+      const distance=Math.abs(points[i].t-currentPathT);
+      const duration=900+distance*1450;
+      await moveCarTo(points[i].t,duration);
+      addDetection(i);
+      await new Promise(resolve=>later(500,resolve));
+    }
+
+    await new Promise(resolve=>later(900,resolve));
+    show('question');
+    setProgress(40);
   }
 
   choices.forEach(btn=>{
