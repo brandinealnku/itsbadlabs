@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Workflow Discovery | ITSBAD Labs</title><meta name="theme-color" content="#07111F">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/site.css">
+<style>
+:root{--a:#FF66C4;--b:#5FD4FF;--ink:#07111F;--navy:#0B1728;--line:#DCE1EA;--paper:#F7F8FC;--muted:#5B667A}
+body{background:var(--paper);font-family:Inter,system-ui,sans-serif;color:var(--ink)}
+.discovery-top{background:var(--ink);color:white;border-bottom:1px solid #2a3950}
+.discovery-top .container{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.discovery-top img{width:100px;height:auto}
+.back-link{color:#d7e1ef;font-size:.85rem;text-decoration:none}
+.hero-discovery{background:radial-gradient(circle at 95% 0,rgba(255,102,196,.12),transparent 35%),var(--ink);color:white;padding:52px 0 66px}
+.eyebrow-d{font-size:.7rem;font-weight:850;letter-spacing:.18em;color:var(--a);text-transform:uppercase}
+.hero-discovery h1{font-size:clamp(2.7rem,7vw,5.8rem);line-height:.93;letter-spacing:-.065em;margin:16px 0 18px;max-width:14ch}
+.hero-discovery p{max-width:64ch;color:#bac9db;font-size:1.08rem}
+.hero-discovery .meta{display:flex;gap:18px;flex-wrap:wrap;color:#a8b7cb;font-size:.8rem;margin-top:22px}
+.shell{max-width:1120px;margin:-30px auto 75px;padding:0 18px;position:relative}
+.workspace{display:grid;grid-template-columns:215px minmax(0,1fr);gap:18px;align-items:start}
+.side{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;position:sticky;top:20px}
+.side h2{font-size:.68rem;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin:8px 10px 15px}
+.stage{width:100%;border:0;background:transparent;text-align:left;display:flex;gap:12px;align-items:center;border-radius:10px;padding:12px 9px;cursor:pointer;color:#495569;font-weight:700;font-size:.87rem}
+.stage:hover{background:#f1f3f9}.stage.active{background:var(--ink);color:white}.num{font-size:.72rem;color:var(--a);font-weight:850}
+.mainpanel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:clamp(22px,4vw,42px);box-shadow:0 20px 60px rgba(7,17,31,.07);min-height:520px}
+.step-kicker{font-size:.7rem;letter-spacing:.17em;font-weight:850;color:#A42C76;text-transform:uppercase}
+.mainpanel h2{font-size:clamp(1.8rem,4vw,2.9rem);letter-spacing:-.05em;line-height:1.05;margin:10px 0}
+.mainpanel p{color:var(--muted);max-width:65ch}
+.field{margin:20px 0}.field label{display:block;font-weight:750;font-size:.9rem;margin-bottom:8px}
+.field input,.field textarea,.field select{display:block;width:100%;background:#fff;border:1px solid #bfc8d6;border-radius:10px;padding:13px 15px;color:var(--ink);font:inherit}
+.field textarea{min-height:90px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{outline:3px solid rgba(255,102,196,.22);border-color:#c03487}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.dbtn{border-radius:999px;border:1px solid #bdc7d6;padding:12px 19px;font-weight:800;cursor:pointer;background:white;color:var(--ink);min-height:46px}
+.dbtn.primary{background:var(--ink);color:white;border-color:var(--ink)}.dbtn.primary:hover{background:#26385a}
+.dbtn:focus-visible,.stage:focus-visible{outline:3px solid var(--a);outline-offset:2px}
+.note{border-left:4px solid var(--a);background:#fff1f9;padding:13px 16px;font-size:.86rem;color:#572340;border-radius:4px;margin:20px 0}
+.info{border:1px solid var(--line);background:#f8f9fc;border-radius:12px;padding:16px;margin:15px 0}
+.info strong{display:block;margin-bottom:6px}.info small{color:var(--muted)}
+.item{padding:14px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}
+.tag{display:inline-block;background:#edf4ff;border:1px solid #d6e4f6;color:#2e5178;font-size:.7rem;font-weight:800;border-radius:30px;padding:4px 10px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.status{font-size:.78rem;color:#a8b7cb}.foot{color:#607088;text-align:center;font-size:.76rem;margin:30px}
+pre{white-space:pre-wrap;overflow:auto;max-height:320px;background:#0B1728;color:#e7effb;border-radius:12px;padding:20px;font-size:.78rem}
+[hidden]{display:none!important}
+@media(max-width:760px){.workspace{display:block}.side{position:static;margin-bottom:12px;display:flex;overflow:auto;gap:4px}.side h2{display:none}.stage{flex:0 0 auto;width:auto;white-space:nowrap}.mainpanel{padding:24px 18px}.row2{grid-template-columns:1fr}.hero-discovery{padding:38px 0 52px}.hero-discovery h1{font-size:2.8rem}}
+</style></head>
+<body>
+<a class="skip" href="#workspace">Skip to discovery</a>
+<header class="discovery-top"><div class="container"><a href="../" aria-label="ITSBAD Labs home"><img src="../assets/brand/itsbad-labs-logo.svg" alt="ITSBAD Labs"></a><a class="back-link" href="../">← Back to ITSBAD Labs</a></div></header>
+<section class="hero-discovery"><div class="container"><div class="eyebrow-d">ITSBAD LABS / EXPERIMENTAL SERVICES</div><h1>Understand the friction.<br>Find the first win.</h1><p>One workflow. Real perspectives. Evidence before automation. A guided discovery workspace for clearer decisions about process improvement and AI.</p><div class="meta"><span>● Private pilot</span><span>● Human-reviewed evidence</span><span>● No server submission</span></div></div></section>
+<main id="workspace" class="shell"><div class="workspace">
+<nav class="side" aria-label="Discovery stages"><h2>Discovery journey</h2><button class="stage active" data-step="0"><span class="num">01</span>Overview</button><button class="stage" data-step="1"><span class="num">02</span>Sponsor intake</button><button class="stage" data-step="2"><span class="num">03</span>Interviews</button><button class="stage" data-step="3"><span class="num">04</span>Evidence</button><button class="stage" data-step="4"><span class="num">05</span>Opportunities</button><button class="stage" data-step="5"><span class="num">06</span>Decision & export</button></nav>
+<div class="mainpanel" id="panel" aria-live="polite"></div></div><p class="foot">ITSBAD Labs · Experimental discovery tool · Not a secure document portal. Do not enter confidential, personal, or regulated data.</p></main>
+<script>
+"use strict";
+const stages=["Overview","Sponsor intake","Interviews","Evidence","Opportunities","Decision & export"];
+const questions=[
+["Your role in this workflow","role"],["Describe the workflow as it actually happens","flow"],["Where does it slow down or require rework?","friction"],["How often does the problem occur?","frequency"],["What tools or systems are involved?","tools"],["What happens when the workflow fails?","impact"],["What evidence or sanitized example could validate this?","proof"]
+];
+let step=0;
+let data={sponsor:{org:"",workflow:"",goal:"",volume:"",constraints:"",owner:""},interviews:[],evidence:[],opportunities:[],decision:{choice:"",reason:"",owner:"",metric:"",conditions:""}};
+let draft={};let editIndex=-1;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function field(label,key,val="",kind="text",placeholder=""){return '<div class="field"><label for="'+key+'">'+esc(label)+'</label>'+(kind==="textarea"?'<textarea id="'+key+'" placeholder="'+esc(placeholder)+'">'+esc(val)+'</textarea>':'<input id="'+key+'" type="text" value="'+esc(val)+'" placeholder="'+esc(placeholder)+'">')+'</div>'}
+function head(k,t,d){return '<div class="step-kicker">'+esc(k)+'</div><h2>'+esc(t)+'</h2><p>'+esc(d)+'</p>'}
+function btn(label,action,primary=false){return '<button class="dbtn'+(primary?' primary':'')+'" data-action="'+action+'">'+esc(label)+'</button>'}
+function render(){
+document.querySelectorAll("[data-step]").forEach(b=>{b.classList.toggle("active",Number(b.dataset.step)===step);b.setAttribute("aria-current",Number(b.dataset.step)===step?"step":"false")});
+let h="";
+if(step===0){h=head("Discovery / 01","A better decision starts here.","This is a facilitator-led prototype for exploring one workflow. The AI-assisted synthesis is optional, and every final recommendation requires human review.");
+h+='<div class="info"><strong>What you will collect</strong><small>Business objectives, stakeholder experiences, supporting evidence, competing improvement options, and a decision record.</small></div><div class="note">Privacy first: This page does not send information to a server. Information remains in this browser tab until exported; refreshing may erase it. Use fictional or sanitized data only.</div>'+btn("Begin discovery","next",true)+' '+btn("Import previous JSON","import");}
+if(step===1){h=head("Discovery / 02","Define the workflow.","Start with the business problem—not a preferred AI tool.");
+const a=data.sponsor;h+=field("Organization or pilot label","org",a.org)+field("Which single workflow are we investigating?","workflow",a.workflow,"textarea")+field("What business outcome should improve?","goal",a.goal,"textarea")+field("How often does the workflow run?","volume",a.volume)+field("Known data, policy, or system constraints","constraints",a.constraints,"textarea")+field("Decision owner / role","owner",a.owner)+btn("Save sponsor intake","sponsor",true);}
+if(step===2){h=head("Discovery / 03","Hear the people doing the work.","Record separate perspectives. Ask follow-ups when answers are vague or contradict one another.");
+h+='<div class="info"><strong>'+data.interviews.length+' interviews recorded</strong><small>Target 3–5 perspectives. Do not include identifying personal information.</small></div>';
+data.interviews.forEach((a,i)=>h+='<div class="item"><strong>'+esc(a.role||"Participant "+(i+1))+'</strong><br><small>'+esc((a.friction||"").slice(0,140))+'</small><div class="controls">'+btn("Edit","editInterview:"+i)+btn("Remove","removeInterview:"+i)+'</div></div>');
+h+='<h3>'+(editIndex>=0?"Edit interview":"Add interview")+'</h3>';
+questions.forEach(q=>h+=field(q[0],q[1],draft[q[1]]||"",q[1]==="role"||q[1]==="frequency"?"text":"textarea"));
+h+='<div class="note">Adaptive follow-up cue: Ask for a recent example, frequency, exceptions, and a sanitized artifact whenever a claim is unclear. Do not treat estimates as verified facts.</div>'+btn(editIndex>=0?"Update interview":"Save interview","saveInterview",true);}
+if(step===3){h=head("Discovery / 04","Make the evidence traceable.","Capture each material claim and distinguish observed facts from estimates.");
+data.evidence.forEach((a,i)=>h+='<div class="item"><span class="tag">'+esc(a.status)+'</span><strong> '+esc(a.claim)+'</strong><br><small>Source: '+esc(a.source)+' · Missing: '+esc(a.missing)+'</small><div class="controls">'+btn("Remove","removeEvidence:"+i)+'</div></div>');
+h+=field("Finding or claim","claim")+field("Source / interview role","source")+field("Evidence status: observed, documented, reported, or unverified","status","reported")+field("What evidence is still missing?","missing","","textarea")+btn("Add evidence","saveEvidence",true);}
+if(step===4){h=head("Discovery / 05","Compare possible interventions.","Consider process redesign and traditional automation before AI.");
+data.opportunities.forEach((a,i)=>h+='<div class="item"><strong>'+esc(a.name)+'</strong><br><small>'+esc(a.type)+' · Impact '+esc(a.impact)+'/5 · Feasibility '+esc(a.feasibility)+'/5 · Evidence '+esc(a.confidence)+'/5 · Risk '+esc(a.risk)+'/5</small><div class="controls">'+btn("Remove","removeOpportunity:"+i)+'</div></div>');
+h+=field("Improvement option","name")+field("Approach: process change, automation, or AI","type")+field("Expected impact (1–5)","impact")+field("Feasibility (1–5)","feasibility")+field("Evidence strength (1–5)","confidence")+field("Risk (1–5; higher means riskier)","risk")+field("Reasoning and dependencies","why","","textarea")+btn("Add option","saveOpportunity",true);
+h+='<div class="note">Scoring is a discussion aid, not an automatic go decision. Weak evidence or high risk can block implementation regardless of rank.</div>';}
+if(step===5){h=head("Discovery / 06","Make the call.","Only an authorized human reviewer should approve the recommendation.");
+const a=data.decision;h+=field("Recommended action: test, investigate, implement, defer, or stop","choice",a.choice)+field("Evidence-based rationale and unresolved uncertainty","reason",a.reason,"textarea")+field("Human approver / role","decisionOwner",a.owner)+field("Success metric for the next experiment","metric",a.metric)+field("Conditions, safeguards, or stop criteria","conditions",a.conditions,"textarea")+btn("Save human decision","saveDecision",true);
+h+='<div class="info"><strong>Review checklist</strong><small>Sponsor defined: '+(data.sponsor.workflow?"yes":"no")+' · Interviews: '+data.interviews.length+' · Evidence items: '+data.evidence.length+' · Options: '+data.opportunities.length+' · Human decision: '+(a.owner&&a.reason?"recorded":"pending")+'</small></div><div class="controls">'+btn("Export JSON","export")+' '+btn("Copy AI analysis prompt","prompt")+' '+btn("Export decision brief","brief")+'</div><div id="output"></div>';}
+if(step>0)h+='<div class="controls">'+btn("← Previous stage","prev")+(step<5?" "+btn("Next stage →","next"):"")+'</div>';
+$("panel").innerHTML=h;
+}
+function value(k){return ($(k)?.value||"").trim()}
+function requireField(k){if(!value(k)){alert("Please complete: "+k);$(k)?.focus();return false}return true}
+function saveSponsor(){if(!requireField("workflow"))return;["org","workflow","goal","volume","constraints","owner"].forEach(k=>data.sponsor[k]=value(k));go(2)}
+function saveInterview(){if(!requireField("role")||!requireField("flow"))return;const a={};questions.forEach(q=>a[q[1]]=value(q[1]));if(editIndex>=0)data.interviews[editIndex]=a;else data.interviews.push(a);draft={};editIndex=-1;render()}
+function saveEvidence(){if(!requireField("claim")||!requireField("source"))return;data.evidence.push({claim:value("claim"),source:value("source"),status:value("status")||"unverified",missing:value("missing")});render()}
+function saveOpportunity(){if(!requireField("name"))return;const a={name:value("name"),type:value("type"),why:value("why")};for(const k of ["impact","feasibility","confidence","risk"]){let n=Number(value(k));if(!Number.isInteger(n)||n<1||n>5){alert(k+" must be 1–5");return}a[k]=n}data.opportunities.push(a);render()}
+function saveDecision(){["choice","reason","decisionOwner","metric","conditions"].forEach(k=>data.decision[k==="decisionOwner"?"owner":k]=value(k));render()}
+function go(n){step=Math.max(0,Math.min(5,n));render();window.scrollTo({top:document.querySelector(".shell").offsetTop-12,behavior:"smooth"})}
+function download(name,content,type){const url=URL.createObjectURL(new Blob([content],{type}));const a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function brief(){return ["ITSBAD LABS | WORKFLOW DISCOVERY — HUMAN REVIEW DRAFT","Workflow: "+data.sponsor.workflow,"Goal: "+data.sponsor.goal,"Interviews: "+data.interviews.length,"Evidence items: "+data.evidence.length,"Options: "+data.opportunities.map(x=>x.name+" ("+x.type+")").join("; "),"Recommendation: "+data.decision.choice,"Rationale: "+data.decision.reason,"Approver: "+data.decision.owner,"Metric: "+data.decision.metric,"Conditions: "+data.decision.conditions,"","Unverified claims must not be represented as validated facts."].join("\n")}
+function aiPrompt(){return "Act as an evidence analyst, not a decision maker. Analyze the sanitized workflow discovery JSON below. Separate documented evidence, reported claims, assumptions, and missing information. Identify contradictions and alternative non-AI explanations. Compare process redesign, automation, and AI; propose up to three options with rationale and risks. Do not invent costs, ROI, or evidence. Provide follow-up questions and a draft decision brief explicitly marked HUMAN APPROVAL REQUIRED.\n\n"+JSON.stringify(data,null,2)}
+document.addEventListener("click",async e=>{const b=e.target.closest("[data-step],[data-action]");if(!b)return;if(b.dataset.step!==undefined){go(Number(b.dataset.step));return}const a=b.dataset.action;if(a==="next")go(step+1);else if(a==="prev")go(step-1);else if(a==="sponsor")saveSponsor();else if(a==="saveInterview")saveInterview();else if(a==="saveEvidence")saveEvidence();else if(a==="saveOpportunity")saveOpportunity();else if(a==="saveDecision")saveDecision();else if(a==="export")download("itsbad-discovery.json",JSON.stringify(data,null,2),"application/json");else if(a==="brief")download("itsbad-decision-brief.txt",brief(),"text/plain");else if(a==="prompt"){try{await navigator.clipboard.writeText(aiPrompt());alert("Prompt copied. Review and sanitize before pasting into an approved AI tool.")}catch{const out=$("output");out.innerHTML="<pre></pre>";out.querySelector("pre").textContent=aiPrompt()}}else if(a==="import"){const input=document.createElement("input");input.type="file";input.accept=".json";input.onchange=()=>{const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!o.sponsor||!Array.isArray(o.interviews)||!Array.isArray(o.evidence)||!Array.isArray(o.opportunities)||!o.decision)throw Error("Not a discovery export");data=o;go(1)}catch(err){alert("Import failed: "+err.message)}};r.readAsText(input.files[0])};input.click()}else if(a.startsWith("editInterview:")){editIndex=Number(a.split(":")[1]);draft={...data.interviews[editIndex]};render()}else if(a.startsWith("remove")){const match=a.match(/^(removeInterview|removeEvidence|removeOpportunity):(\d+)$/);if(match&&confirm("Remove this record?")){const key={removeInterview:"interviews",removeEvidence:"evidence",removeOpportunity:"opportunities"}[match[1]];data[key].splice(Number(match[2]),1);render()}}});
+render();
+</script></body></html>
